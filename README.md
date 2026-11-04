@@ -1,6 +1,6 @@
 # ArcVault Intake & Triage
 
-An n8n pipeline that receives a customer Request at a webhook and classifies it with an LLM (Groq, `openai/gpt-oss-120b`). Enrichment, routing, escalation and the Google Sheet come in later tickets.
+An n8n pipeline that receives a customer Request at a webhook, classifies and enriches it with an LLM (Groq, `openai/gpt-oss-120b`), routes it to a Standard Queue with plain-code rules, escalates when a rule applies, and returns a full Triage Record. The Google Sheet comes in a later ticket.
 
 ## Prerequisites
 
@@ -33,9 +33,13 @@ This imports `workflow/arcvault-triage.json`, publishes it and restarts n8n. Wai
 ## Send the sample Requests
 
 ```
-npm run send                        # all five required samples
-npm run send -- --only msg-001      # just one
+npm run send                        # all five required samples (about 2 minutes: Requests are
+                                    # spaced 20s apart to stay under Groq's free-tier rate limit)
+npm run send -- --only msg-001      # just one (writes no file)
+npm run send -- --out my.json       # write the records to another path
 ```
+
+A whole-file send prints one line per Request and writes the Triage Records as a JSON array to `output/records.json`.
 
 ## Test
 
@@ -45,4 +49,4 @@ npm test
 
 ## Keeping the workflow in sync
 
-`prompts/classification.md` and `src/validate.js` are the source of truth. After editing either, run `npm run sync` to copy them into the workflow JSON, then `npm run n8n:import`. `npm run sync:check` fails if the workflow is out of date.
+`prompts/classification.md`, `prompts/enrichment.md`, `src/validate.js` and `src/decision.js` are the source of truth (`workflow/code/groq.js` is the Groq call shared by the Classify and Enrich nodes). After editing any of them, run `npm run sync` to copy them into the workflow JSON, then `npm run n8n:import`. `npm run sync:check` fails if the workflow is out of date.

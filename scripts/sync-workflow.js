@@ -8,7 +8,9 @@
 //   // END COPY <file>
 // The sync fills each block with the current contents of <file>. A .md file becomes a
 // JS string constant (prompts/classification.md -> CLASSIFICATION_PROMPT); a .js file is pasted as is.
-// To add a node (ticket 03: enrichment prompt, src/decision.js), add a template and a line to CODE_NODES.
+// To add a node, add a template and a line to CODE_NODES. A template can also include a shared
+// .js template with a COPY block (workflow/code/groq.js, the Groq call used by Classify and Enrich).
+// That shared file is not a node itself, so it is not in CODE_NODES.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -20,6 +22,8 @@ const WORKFLOW = path.join(ROOT, "workflow", "arcvault-triage.json");
 const CODE_NODES = {
   "Stamp Request": "workflow/code/stamp.js",
   "Classify": "workflow/code/classify.js",
+  "Enrich": "workflow/code/enrich.js",
+  "Decide": "workflow/code/decide.js",
   "Build Response": "workflow/code/respond.js",
 };
 

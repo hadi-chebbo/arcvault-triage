@@ -3,7 +3,11 @@
 const body = $input.first().json.body || {};
 const SOURCES = ["Email", "Web Form", "Support Portal"];
 
-const invalid = (error) => [{ json: { invalid: true, error } }];
+// Replaced with the workflow's versionId by scripts/import-workflow.js. The 400 reply echoes it,
+// so the import can tell when n8n is serving the version it just published.
+const BUILD = "dev";
+
+const invalid = (error) => [{ json: { invalid: true, error, build: BUILD } }];
 
 if (typeof body.message !== "string") return invalid("message is required and must be a string");
 if (body.message.trim() === "") return invalid("message must not be blank");
