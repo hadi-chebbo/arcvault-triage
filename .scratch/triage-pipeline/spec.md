@@ -151,7 +151,7 @@ Rules:
 
 ### Triage Record schema
 
-Fields, in this order: `id`, `source`, `received_at`, `message`, `category`, `priority`, `confidence`, `reasoning`, `core_issue`, `identifiers` (object of named Identifiers), `amounts` (`charged`, `expected`, `overcharge`, or null), `urgency_signal`, `outage_signal` (true or false) (high, medium or low), `standard_queue`, `escalated`, `escalation_reasons`, `final_queue`, `summary`, `model`, `ai_errors` (list of short reasons why an AI step failed; empty when both succeeded). When a step fails, its fields are null.
+Fields, in this order: `id`, `source`, `received_at`, `message`, `category`, `priority`, `confidence`, `reasoning`, `core_issue`, `identifiers` (object of named Identifiers), `amounts` (`charged`, `expected`, `overcharge`, or null), `urgency_signal` (high, medium or low), `outage_signal` (true or false), `standard_queue`, `escalated`, `escalation_reasons`, `final_queue`, `summary`, `model`, `ai_errors` (list of short reasons why an AI step failed; empty when both succeeded). When a step fails, its fields are null.
 
 ### Google Sheet
 
