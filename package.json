@@ -5,6 +5,12 @@
   "description": "AI intake and triage pipeline for ArcVault (Valsoft AI Engineer assessment)",
   "type": "commonjs",
   "scripts": {
-    "test": "node --test \"test/**/*.test.js\""
+    "test": "node --test \"test/**/*.test.js\"",
+    "n8n:up": "docker compose up -d",
+    "n8n:down": "docker compose down",
+    "sync": "node scripts/sync-workflow.js",
+    "sync:check": "node scripts/sync-workflow.js --check",
+    "n8n:import": "node scripts/import-workflow.js",
+    "send": "node scripts/send-samples.js"
   }
 }
