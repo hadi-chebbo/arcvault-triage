@@ -8,5 +8,10 @@ Claude's first design detected outages in two ways: the classification model cho
 
 ## Smaller fixes
 
+- Claude recommended Llama 3.3 70B on Groq from its own knowledge, but when we checked Groq's live model list, the model had been retired. We tested the two remaining general-purpose models on a sample and switched to `openai/gpt-oss-120b`. Lesson: check what a provider actually offers instead of trusting an AI's memory.
+
 - The test command Claude first wrote (`node --test test/`) failed on Node 26, which no longer accepts a folder name. It was changed to a file pattern.
 - The code review found that the first version of the routing rules let malformed AI answers through (a missing confidence score, a null response, a category like "toString"). They were fixed so that anything malformed escalates to a human.
+- The subagent that built ticket 02 reported that importing and publishing the workflow worked. It did, but only the first time. Code review and a live test showed that every later import reused n8n's previous version id, so n8n kept serving the old code. I gave each import a fresh version id and verified it live. Lesson: "it worked once" isn't verified; test the path you will actually use repeatedly.
+- `crypto.randomUUID()`, the usual way to make an ID in JavaScript, doesn't exist inside n8n's Code node sandbox. The first Request without an id failed with "Error in workflow". It now uses a timestamp plus random letters.
+- The model's Confidence for sample #4 (Okta SSO) changed between identical runs (0.78, 0.96, 0.75), even at temperature 0. A single self-reported Confidence isn't stable enough to trust alone; this shaped the evaluation in ticket 04.
