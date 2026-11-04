@@ -2,7 +2,7 @@
   {
     "id": "msg-001",
     "source": "Email",
-    "received_at": "2026-11-04T17:45:19.870Z",
+    "received_at": "2026-11-04T17:50:53.059Z",
     "message": "Hi, I tried logging in this morning and keep getting a 403 error. My account is arcvault.io/user/jsmith. This started after your update last Tuesday.",
     "category": "Bug Report",
     "priority": "Medium",
@@ -14,11 +14,7 @@
       "account": "arcvault.io/user/jsmith",
       "started_at": "after your update last Tuesday"
     },
-    "amounts": {
-      "charged": null,
-      "expected": null,
-      "overcharge": null
-    },
+    "amounts": null,
     "urgency_signal": "medium",
     "outage_signal": false,
     "standard_queue": "Engineering",
@@ -32,13 +28,13 @@
   {
     "id": "msg-002",
     "source": "Web Form",
-    "received_at": "2026-11-04T17:45:22.917Z",
+    "received_at": "2026-11-04T17:51:15.482Z",
     "message": "We'd love to see a bulk export feature for our audit logs. We're a compliance-heavy org and this would save us hours every month.",
     "category": "Feature Request",
     "priority": "Low",
     "confidence": 0.96,
     "reasoning": "The customer is asking for a new bulk export capability, which is a feature request.",
-    "core_issue": "Customer requests a bulk export feature for audit logs",
+    "core_issue": "Request for a bulk export feature for audit logs",
     "identifiers": {
       "feature": "audit logs"
     },
@@ -49,20 +45,20 @@
     "escalated": false,
     "escalation_reasons": [],
     "final_queue": "Product",
-    "summary": "The customer wants a bulk export capability for their audit logs. They are a compliance-heavy organization and believe this would save them hours each month. They are requesting this feature be added to the product.",
+    "summary": "The customer is asking for a bulk export capability for their audit logs. They are a compliance-heavy organization and believe this feature would save them hours each month. They are requesting this feature to be added to the product.",
     "model": "openai/gpt-oss-120b",
     "ai_errors": []
   },
   {
     "id": "msg-003",
     "source": "Support Portal",
-    "received_at": "2026-11-04T17:45:25.260Z",
+    "received_at": "2026-11-04T17:51:39.454Z",
     "message": "Invoice #8821 shows a charge of $1,240 but our contract rate is $980/month. Can someone look into this?",
     "category": "Billing Issue",
     "priority": "Medium",
-    "confidence": 0.96,
-    "reasoning": "The request disputes an invoice charge, fitting the Billing Issue category.",
-    "core_issue": "Invoice #8821 was charged $1,240 instead of the contracted $980/month.",
+    "confidence": 0.97,
+    "reasoning": "The request disputes an invoice charge, which is a billing issue.",
+    "core_issue": "Invoice #8821 shows an overcharge compared to the contract rate.",
     "identifiers": {
       "invoice_number": "8821"
     },
@@ -77,42 +73,38 @@
     "escalated": false,
     "escalation_reasons": [],
     "final_queue": "Billing",
-    "summary": "The customer sees that Invoice #8821 shows a charge of $1,240, which exceeds their contract rate of $980 per month. They are asking for the discrepancy to be investigated.",
+    "summary": "The customer reports that Invoice #8821 was billed $1,240, while their contract rate is $980 per month. They are requesting a review and correction of the charge.",
     "model": "openai/gpt-oss-120b",
     "ai_errors": []
   },
   {
     "id": "msg-004",
     "source": "Email",
-    "received_at": "2026-11-04T17:45:28.659Z",
+    "received_at": "2026-11-04T17:52:01.977Z",
     "message": "I'm not sure if this is the right place to ask, but is there a way to set up SSO with Okta? We're evaluating switching our auth provider.",
-    "category": null,
-    "priority": null,
-    "confidence": null,
-    "reasoning": null,
-    "core_issue": "Customer wants to know if SSO with Okta can be set up",
+    "category": "Technical Question",
+    "priority": "Low",
+    "confidence": 0.78,
+    "reasoning": "User asks how to configure SSO with Okta, a how‑to question about existing functionality",
+    "core_issue": "The customer wants to know if SSO can be set up with Okta.",
     "identifiers": {
       "integration": "Okta"
     },
     "amounts": null,
     "urgency_signal": "low",
     "outage_signal": false,
-    "standard_queue": null,
-    "escalated": true,
-    "escalation_reasons": [
-      "ai_failure"
-    ],
-    "final_queue": "Escalation",
-    "summary": "The customer is evaluating a switch to Okta for authentication and asks whether ArcVault supports SSO integration with Okta. They are seeking guidance on setting up this integration.",
+    "standard_queue": "Customer Success",
+    "escalated": false,
+    "escalation_reasons": [],
+    "final_queue": "Customer Success",
+    "summary": "The user is evaluating a switch to Okta for authentication and asks whether ArcVault supports SSO integration with Okta. They are seeking confirmation or guidance on setting this up.",
     "model": "openai/gpt-oss-120b",
-    "ai_errors": [
-      "classification: API error: Request failed with status code 429"
-    ]
+    "ai_errors": []
   },
   {
     "id": "msg-005",
     "source": "Web Form",
-    "received_at": "2026-11-04T17:45:37.565Z",
+    "received_at": "2026-11-04T17:52:25.087Z",
     "message": "Your dashboard stopped loading for us around 2pm EST. Checked our end — it's definitely on yours. Multiple users affected.",
     "category": "Incident/Outage",
     "priority": "High",
@@ -123,11 +115,7 @@
       "feature": "dashboard",
       "started_at": "around 2pm EST"
     },
-    "amounts": {
-      "charged": null,
-      "expected": null,
-      "overcharge": null
-    },
+    "amounts": null,
     "urgency_signal": "high",
     "outage_signal": true,
     "standard_queue": "Engineering (on-call)",

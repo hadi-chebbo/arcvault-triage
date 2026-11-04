@@ -22,6 +22,9 @@ run("node", ["scripts/sync-workflow.js", "--check"]); // never import stale copi
 const workflow = JSON.parse(fs.readFileSync("workflow/arcvault-triage.json", "utf8"));
 workflow.versionId = crypto.randomUUID();
 const stamp = workflow.nodes.find((node) => node.name === "Stamp Request");
+if (!stamp || !stamp.parameters.jsCode.includes('const BUILD = "dev";')) {
+  throw new Error('The Stamp Request node must contain the line: const BUILD = "dev";');
+}
 stamp.parameters.jsCode = stamp.parameters.jsCode.replace('const BUILD = "dev";', `const BUILD = "${workflow.versionId}";`);
 const importFile = path.join(os.tmpdir(), "arcvault-triage-import.json");
 fs.writeFileSync(importFile, JSON.stringify(workflow, null, 2));
@@ -51,7 +54,7 @@ async function waitForWebhook() {
 
 waitForWebhook().then((ready) => {
   if (!ready) {
-    console.error("n8n did not serve the new version within 60 seconds. Check: docker logs arcvault-n8n");
+    console.error(`n8n did not serve the new version within 60 seconds. Check: docker logs ${CONTAINER}`);
     process.exit(1);
   }
   console.log("Imported, published, and the new version is live. Run: npm run send");

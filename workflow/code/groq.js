@@ -5,15 +5,18 @@
 const MODEL = "openai/gpt-oss-120b";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MAX_TRIES = 3; // the first try plus 2 retries
-const RETRY_PAUSES_MS = [1000, 3000]; // wait before retry 1 and retry 2, so a rate limit can clear
+// Wait before retry 1 and retry 2. Groq's free tier allows 8,000 tokens per minute, and a 429 (rate limit)
+// needs seconds, not milliseconds, to clear.
+const RETRY_PAUSES_MS = [10000, 20000];
 
 // Sleep helper; falls back to no pause if this sandbox has no timers.
 const pause = (ms) => (typeof setTimeout === "function" ? new Promise((done) => setTimeout(done, ms)) : Promise.resolve());
 
 // Asks Groq with a system prompt and a user message, and checks the answer with `validate`
 // (validateClassification or validateEnrichment). Tries up to MAX_TRIES times.
+// reasoningEffort is gpt-oss's thinking budget: "low", "medium" (the model's default) or "high".
 // Returns { ok: true, value } with the checked answer, or { ok: false, error } with a short reason.
-const askGroq = async (systemPrompt, userMessage, validate) => {
+const askGroq = async (systemPrompt, userMessage, validate, reasoningEffort = "medium") => {
   let error = "no attempt was made";
   for (let attempt = 1; attempt <= MAX_TRIES; attempt++) {
     if (attempt > 1) await pause(RETRY_PAUSES_MS[attempt - 2]);
@@ -25,6 +28,7 @@ const askGroq = async (systemPrompt, userMessage, validate) => {
         body: {
           model: MODEL,
           temperature: 0,
+          reasoning_effort: reasoningEffort,
           response_format: { type: "json_object" },
           messages: [
             { role: "system", content: systemPrompt },
@@ -32,7 +36,7 @@ const askGroq = async (systemPrompt, userMessage, validate) => {
           ],
         },
         json: true,
-        timeout: 20000,
+        timeout: 30000,
       });
       const check = validate(response.choices[0].message.content);
       if (check.ok) return { ok: true, value: check.classification || check.enrichment };

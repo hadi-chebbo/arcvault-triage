@@ -17,6 +17,8 @@ const category = item.classification.failed ? "unknown" : item.classification.ca
 // The Request and Category are delimited so the model can tell data from instructions.
 const userMessage = `<category>${category}</category>\n<request>\n${item.message}\n</request>`;
 
+// Default reasoning effort on purpose: "low" used a third of the tokens but dropped Identifiers
+// on samples #2 and #5 (the feature names and "around 2pm EST").
 const answer = await askGroq(ENRICHMENT_PROMPT, userMessage, validateEnrichment);
 const enrichment = answer.ok ? answer.value : { failed: true, error: answer.error };
 

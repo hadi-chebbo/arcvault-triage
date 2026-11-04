@@ -8,6 +8,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const WEBHOOK_URL = process.env.WEBHOOK_URL || "http://localhost:5678/webhook/intake";
+// Pause between Requests. Each Request makes two Groq calls, and the free tier allows
+// 8,000 tokens per minute, so sending back to back hits the rate limit (HTTP 429).
+const SPACING_MS = 20000;
 const DEFAULT_OUT = "output/records.json";
 
 const args = process.argv.slice(2);
@@ -26,7 +29,8 @@ async function main() {
   }
 
   const records = [];
-  for (const request of requests) {
+  for (const [index, request] of requests.entries()) {
+    if (index > 0) await new Promise((done) => setTimeout(done, SPACING_MS));
     const response = await fetch(WEBHOOK_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

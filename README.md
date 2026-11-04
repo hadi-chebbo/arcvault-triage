@@ -33,7 +33,8 @@ This imports `workflow/arcvault-triage.json`, publishes it and restarts n8n. Wai
 ## Send the sample Requests
 
 ```
-npm run send                        # all five required samples
+npm run send                        # all five required samples (about 2 minutes: Requests are
+                                    # spaced 20s apart to stay under Groq's free-tier rate limit)
 npm run send -- --only msg-001      # just one (writes no file)
 npm run send -- --out my.json       # write the records to another path
 ```

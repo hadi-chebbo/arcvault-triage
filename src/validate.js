@@ -60,9 +60,13 @@ function validateEnrichment(raw) {
   if (!isPlainObject(answer.identifiers) || !Object.values(answer.identifiers).every((value) => typeof value === "string")) {
     return { ok: false, reason: "identifiers is not an object of text values" };
   }
-  const amounts = answer.amounts;
-  if (amounts !== null && !(isPlainObject(amounts) && isNumberOrNull(amounts.charged) && isNumberOrNull(amounts.expected))) {
-    return { ok: false, reason: "amounts is not null or an object with charged and expected as numbers or null" };
+  // A missing amount counts as null, and an object with no amounts at all becomes null.
+  const given = answer.amounts;
+  if (given !== null && !isPlainObject(given)) return { ok: false, reason: "amounts is not null or an object" };
+  const charged = given === null || given.charged === undefined ? null : given.charged;
+  const expected = given === null || given.expected === undefined ? null : given.expected;
+  if (!isNumberOrNull(charged) || !isNumberOrNull(expected)) {
+    return { ok: false, reason: "amounts charged and expected must be numbers or null" };
   }
   if (!URGENCY_SIGNALS.includes(answer.urgency_signal)) return { ok: false, reason: "urgency_signal is not high, medium or low" };
   if (typeof answer.outage_signal !== "boolean") return { ok: false, reason: "outage_signal is not true or false" };
@@ -71,7 +75,7 @@ function validateEnrichment(raw) {
     enrichment: {
       core_issue: answer.core_issue.trim(),
       identifiers: answer.identifiers,
-      amounts: amounts === null ? null : { charged: amounts.charged, expected: amounts.expected },
+      amounts: charged === null && expected === null ? null : { charged, expected },
       urgency_signal: answer.urgency_signal,
       outage_signal: answer.outage_signal,
       summary: answer.summary.trim(),

@@ -170,11 +170,8 @@ test("identifiers that are not an object of text values are rejected", () => {
 });
 
 test("amounts that are not null or an object with numbers or null are rejected", () => {
-  for (const amounts of [undefined, 1240, "1240", [1240, 980], { charged: "1240", expected: 980 }, { charged: 1240 }, { charged: 1240, expected: "980" }, { charged: 1240, expected: true }]) {
-    assert.deepEqual(validateEnrichment(enrichmentAnswer({ amounts })), {
-      ok: false,
-      reason: "amounts is not null or an object with charged and expected as numbers or null",
-    });
+  for (const amounts of [undefined, 1240, "1240", [1240, 980], { charged: "1240", expected: 980 }, { charged: 1240, expected: "980" }, { charged: 1240, expected: true }]) {
+    assert.equal(validateEnrichment(enrichmentAnswer({ amounts })).ok, false, `accepted amounts ${JSON.stringify(amounts)}`);
   }
 });
 
@@ -200,4 +197,16 @@ test("the enrichment prompt names every Urgency Signal and every field the valid
   const prompt = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "prompts", "enrichment.md"), "utf8");
   const fields = ["core_issue", "identifiers", "amounts", "charged", "expected", "urgency_signal", "outage_signal", "summary"];
   for (const name of [...URGENCY_SIGNALS, ...fields]) assert.ok(prompt.includes(name), `prompt does not mention "${name}"`);
+});
+
+test("an amounts object with a missing amount treats it as null", () => {
+  const check = validateEnrichment(enrichmentAnswer({ amounts: { charged: 100 } }));
+  assert.equal(check.ok, true);
+  assert.deepEqual(check.enrichment.amounts, { charged: 100, expected: null });
+});
+
+test("an amounts object with both amounts null becomes null, so records have one shape for no amounts", () => {
+  const check = validateEnrichment(enrichmentAnswer({ amounts: { charged: null, expected: null } }));
+  assert.equal(check.ok, true);
+  assert.equal(check.enrichment.amounts, null);
 });
