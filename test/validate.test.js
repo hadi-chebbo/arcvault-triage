@@ -90,3 +90,11 @@ test("a missing, empty, blank or non-text reasoning is rejected", () => {
   assert.deepEqual(validateClassification(answer({ reasoning: "   " })), bad);
   assert.deepEqual(validateClassification(answer({ reasoning: 42 })), bad);
 });
+
+test("the classification prompt names every Category and Priority the validator accepts", () => {
+  const { CATEGORIES, PRIORITIES } = require("../src/validate.js");
+  const prompt = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "prompts", "classification.md"), "utf8");
+  assert.deepEqual(CATEGORIES, ["Bug Report", "Feature Request", "Billing Issue", "Technical Question", "Incident/Outage"]);
+  assert.deepEqual(PRIORITIES, ["High", "Medium", "Low"]);
+  for (const name of [...CATEGORIES, ...PRIORITIES]) assert.ok(prompt.includes(name), `prompt does not mention "${name}"`);
+});

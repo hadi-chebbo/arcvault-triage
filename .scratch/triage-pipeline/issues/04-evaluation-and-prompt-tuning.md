@@ -13,3 +13,9 @@
 - [ ] It also checks that each Triage Record has every schema field
 - [ ] Prompts are adjusted until the required set passes, or each remaining miss is explained
 - [ ] Each AI mistake found (what happened, how it was noticed, the fix) is recorded in the AI usage log
+
+## Comments
+
+Findings from ticket 02:
+- Sample #4's Confidence varied across runs at temperature 0: 0.78, 0.96, 0.75. Run each sample several times (e.g. 3) and report the spread, not a single value. This is evidence for the Phase 2 self-consistency idea.
+- The `ai_failure` path has only been tested with stubs. Prove it end to end once, e.g. by pointing the workflow at a model name that doesn't exist, and check that the Request still gets a Triage Record.

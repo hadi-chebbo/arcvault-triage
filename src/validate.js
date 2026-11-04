@@ -38,4 +38,4 @@ function validateClassification(raw) {
   };
 }
 
-if (typeof module !== "undefined") module.exports = { validateClassification };
+if (typeof module !== "undefined") module.exports = { validateClassification, CATEGORIES, PRIORITIES };
