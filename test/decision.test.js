@@ -18,6 +18,7 @@ function input({ message = "Something is wrong.", classification = {}, enrichmen
       identifiers: {},
       amounts: null,
       urgency_signal: "medium",
+      outage_signal: false,
       summary: "test",
       ...enrichment,
     },
@@ -72,24 +73,33 @@ test("every Incident/Outage escalates, even with high Confidence", () => {
   assert.equal(result.final_queue, "Escalation");
 });
 
-for (const message of [
-  "We are seeing an OUTAGE in the EU region.",
-  "The API has been down for an hour.",
-  "This affects all users in our org.",
-  "Multiple users can't log in.",
-  "Reports stopped loading at noon.",
-]) {
-  test(`outage wording escalates a Bug Report: "${message}"`, () => {
-    const result = decide(input({ message }));
-    assert.deepEqual(result.escalation_reasons, ["outage_keywords"]);
+test("an Outage Signal escalates a Bug Report on its own", () => {
+  const result = decide(input({ enrichment: { outage_signal: true } }));
+  assert.deepEqual(result.escalation_reasons, ["outage_signal"]);
+  assert.equal(result.standard_queue, "Engineering");
+  assert.equal(result.final_queue, "Escalation");
+});
+
+for (const category of ["Feature Request", "Billing Issue", "Technical Question"]) {
+  test(`an Outage Signal escalates a ${category} too`, () => {
+    const result = decide(input({ classification: { category }, enrichment: { outage_signal: true } }));
+    assert.deepEqual(result.escalation_reasons, ["outage_signal"]);
     assert.equal(result.final_queue, "Escalation");
   });
 }
 
-test('"download" does not count as outage wording', () => {
-  const result = decide(input({ message: "The CSV download button gives a blank file." }));
+test("without an Outage Signal, outage words in the Request do not escalate", () => {
+  const result = decide(input({ message: "We had an outage last year, all users are fine now.", enrichment: { outage_signal: false } }));
   assert.equal(result.escalated, false);
 });
+
+for (const outage_signal of [undefined, null, "true", 1, "yes"]) {
+  test(`a successful enrichment with an Outage Signal of ${JSON.stringify(outage_signal)} escalates with ai_failure`, () => {
+    const result = decide(input({ enrichment: { outage_signal } }));
+    assert.deepEqual(result.escalation_reasons, ["ai_failure"]);
+    assert.equal(result.final_queue, "Escalation");
+  });
+}
 
 function billing(amounts) {
   return input({ classification: { category: "Billing Issue" }, enrichment: { amounts } });
@@ -140,9 +150,9 @@ test("a failed classification escalates with ai_failure and has no Standard Queu
   assert.equal(result.final_queue, "Escalation");
 });
 
-test("a failed classification still records outage wording found in the Request", () => {
-  const result = decide({ ...input({ message: "Total outage since 9am." }), classification: { failed: true } });
-  assert.deepEqual(result.escalation_reasons, ["outage_keywords", "ai_failure"]);
+test("a failed classification still records an Outage Signal from the enrichment", () => {
+  const result = decide({ ...input({ enrichment: { outage_signal: true } }), classification: { failed: true } });
+  assert.deepEqual(result.escalation_reasons, ["outage_signal", "ai_failure"]);
 });
 
 test("a failed enrichment escalates with ai_failure but keeps the Standard Queue", () => {
@@ -165,19 +175,10 @@ test("sample #5 shape: every reason that applies is recorded, in spec order", ()
     input({
       message: "Your dashboard stopped loading for us around 2pm EST. Multiple users affected.",
       classification: { category: "Incident/Outage", confidence: 0.6 },
+      enrichment: { outage_signal: true },
     })
   );
-  assert.deepEqual(result.escalation_reasons, ["low_confidence", "incident", "outage_keywords"]);
-});
-
-test("outage wording split across a line break still escalates", () => {
-  const result = decide(input({ message: "Since noon multiple\nusers see a blank page." }));
-  assert.deepEqual(result.escalation_reasons, ["outage_keywords"]);
-});
-
-test('the plural "outages" counts as outage wording', () => {
-  const result = decide(input({ message: "We keep having outages every morning." }));
-  assert.deepEqual(result.escalation_reasons, ["outage_keywords"]);
+  assert.deepEqual(result.escalation_reasons, ["low_confidence", "incident", "outage_signal"]);
 });
 
 for (const step of ["classification", "enrichment"]) {
@@ -199,14 +200,13 @@ for (const confidence of [undefined, "0.9", 1.5, -0.1]) {
 test("reasons from every rule that can apply together are recorded in spec order", () => {
   const result = decide(
     input({
-      message: "Total outage, and you overcharged us.",
       classification: { category: "Spam", confidence: 0.4 },
-      enrichment: { amounts: { charged: 2000, expected: 980 } },
+      enrichment: { outage_signal: true, amounts: { charged: 2000, expected: 980 } },
     })
   );
   assert.deepEqual(result.escalation_reasons, [
     "low_confidence",
-    "outage_keywords",
+    "outage_signal",
     "overcharge_over_500",
     "ai_failure",
   ]);
