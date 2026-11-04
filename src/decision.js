@@ -30,7 +30,7 @@ function overchargeOf(amounts) {
 
 function decide({ request, classification, enrichment }) {
   const classified = Boolean(classification) && !classification.failed;
-  const enriched = Boolean(enrichment) && !enrichment.failed;
+  const enriched = Boolean(enrichment) && !enrichment.failed; 
   const category = classified ? classification.category : undefined;
   const confidence = classified ? classification.confidence : undefined;
   const confidenceValid = typeof confidence === "number" && confidence >= 0 && confidence <= 1;

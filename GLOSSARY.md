@@ -63,6 +63,10 @@ _Avoid_: Priority (they are different things)
 The amount charged minus the amount the contract says should have been charged.
 _Avoid_: Billing error amount, invoice total
 
+**Outage Signal**:
+The enrichment step's own yes/no judgement that a Request describes a service outage affecting many users. It is a second opinion on top of the Category, not a keyword match.
+_Avoid_: Outage keywords, outage language
+
 **Summary**:
 Two or three sentences that let the receiving team act without reading the original Request.
 
@@ -76,7 +80,7 @@ _Avoid_: Destination, bucket, team
 The Queue a Request's Category maps to, before escalation is considered.
 
 **Escalation**:
-Sending a Triage Record to the Escalation Queue so a human reviews it first, instead of its Standard Queue. It happens when Confidence is below 0.70, the Category is Incident/Outage, the Request uses outage language, the Overcharge is above $500, or an AI step failed.
+Sending a Triage Record to the Escalation Queue so a human reviews it first, instead of its Standard Queue. It happens when Confidence is below 0.70, the Category is Incident/Outage, the Outage Signal is raised, the Overcharge is above $500, or an AI step failed.
 _Avoid_: Fallback, human review flag
 
 **Escalation Reason**:

@@ -65,8 +65,8 @@ The AI only reads and writes text. Every decision that must follow a rule exactl
 
 27. As a human reviewer, I want any record with Confidence below 0.70 escalated, so that uncertain classifications are checked before a team acts on them.
 28. As an on-call engineer, I want every Incident/Outage escalated, so that a person confirms the outage straight away.
-29. As an on-call engineer, I want a Request that uses outage language ("outage", "down for", "all users", "multiple users", "stopped loading") escalated even if the AI chose a different Category, so that a misclassified outage is still caught.
-30. As an ArcVault operator, I want outage wording matched as whole phrases, so that a word like "download" does not trigger an Escalation.
+29. As an on-call engineer, I want a second, independent AI judgement of whether a Request describes an outage (the Outage Signal), and an Escalation when it says yes even if the Category is different, so that a misclassified outage is still caught.
+30. As a human reviewer, I want the Outage Signal to come from understanding the Request rather than matching words, so that "we had an outage last year, all fine now" does not trigger a false Escalation.
 31. As a billing manager, I want any Overcharge above $500 escalated, so that large disputes get a human before the customer is contacted.
 32. As a billing manager, I want an Overcharge of exactly $500 not to escalate, so that the rule's boundary is clear and documented.
 33. As a human reviewer, I want every Escalation Reason that applied recorded on the Triage Record, so that I know what to check first.
@@ -135,7 +135,7 @@ Rules:
 - Escalation Reasons, checked in this order:
   - `low_confidence`: Confidence < 0.70 (0.70 itself does not escalate)
   - `incident`: Category is Incident/Outage
-  - `outage_keywords`: case-insensitive whole-phrase match on "outage", "down for", "all users", "multiple users", "stopped loading"
+  - `outage_signal`: the enrichment step judged that the Request describes a service outage affecting many users. This replaces an earlier keyword-matching rule; see Further Notes.
   - `overcharge_over_500`: Overcharge > 500 ($500 exactly does not escalate)
   - `ai_failure`: either AI step failed after retries
 - `final_queue` is Escalation if any reason applies, otherwise the Standard Queue.
@@ -146,12 +146,12 @@ Rules:
 - Provider: Groq through its OpenAI-compatible chat completions API, with JSON response mode and temperature 0.
 - Model: Llama 3.3 70B. Check during setup that this model is still offered on Groq's free tier; if it isn't, use Groq's closest current Llama model and record the change in the write-up.
 - Call 1 (classification) receives the Request text. Its prompt defines each Category in one line, includes a tie-break rule between Technical Question and Feature Request, and spells out the Priority rules and the Confidence scale.
-- Call 2 (enrichment) receives the Request text and the Category from call 1. It must return only Identifiers that appear in the text, and amounts as plain numbers.
+- Call 2 (enrichment) receives the Request text and the Category from call 1. It also returns the Outage Signal, judged from the text on its own, not copied from the Category. It must return only Identifiers that appear in the text, and amounts as plain numbers.
 - Each call is tried up to 3 times in total (the first try plus 2 retries) on an invalid response or an API error.
 
 ### Triage Record schema
 
-Fields, in this order: `id`, `source`, `received_at`, `message`, `category`, `priority`, `confidence`, `reasoning`, `core_issue`, `identifiers` (object of named Identifiers), `amounts` (`charged`, `expected`, `overcharge`, or null), `urgency_signal` (high, medium or low), `standard_queue`, `escalated`, `escalation_reasons`, `final_queue`, `summary`, `model`.
+Fields, in this order: `id`, `source`, `received_at`, `message`, `category`, `priority`, `confidence`, `reasoning`, `core_issue`, `identifiers` (object of named Identifiers), `amounts` (`charged`, `expected`, `overcharge`, or null), `urgency_signal`, `outage_signal` (true or false) (high, medium or low), `standard_queue`, `escalated`, `escalation_reasons`, `final_queue`, `summary`, `model`.
 
 ### Google Sheet
 
@@ -184,13 +184,13 @@ A good test exercises behavior through a public interface and asserts on outcome
 | 2 | Feature Request | Product | no | none |
 | 3 | Billing Issue | Billing | no | none (Overcharge is $260) |
 | 4 | Technical Question or Feature Request | Escalation | yes | low_confidence |
-| 5 | Incident/Outage | Escalation | yes | incident, outage_keywords |
+| 5 | Incident/Outage | Escalation | yes | incident, outage_signal |
 
   Sample #4 is ambiguous on purpose. If the model is confident about it, record that as a finding: decide whether the prompt or the expectation should change, and don't hide the result.
 
 - Edge-case samples:
   - an Overcharge above $500 → Billing Issue, escalated with `overcharge_over_500`
-  - a message containing "download" → not escalated by keywords
+  - false-alarm checks: Requests that sound like outages but are not ("we had an outage last year, all fine now"; "one user can't see the dashboard") → no `incident` and no `outage_signal`. The evaluation table reports false Escalations as their own count.
   - a mixed bug-and-billing message → one Category, with the choice explained in the reasoning
   - a vague one-liner → low Confidence, escalated
   - a non-English message → classified correctly
@@ -203,8 +203,8 @@ A good test exercises behavior through a public interface and asserts on outcome
   - Confidence exactly 0.70 vs 0.69
   - Overcharge exactly 500 vs 501
   - missing amounts (Overcharge is null, and the billing rule does not fire)
-  - "download" does not match the keyword rule
-  - each keyword phrase does match
+  - the Outage Signal escalates on its own, with any Category
+  - a missing or non-boolean Outage Signal from a successful enrichment escalates with `ai_failure`
   - multiple reasons are all recorded, in order
   - an unknown Category and AI failure markers escalate with `ai_failure`
 - They use Node's built-in test runner, so there are no dependencies to install.
@@ -230,4 +230,5 @@ A good test exercises behavior through a public interface and asserts on outcome
   - Extra: an AI usage log for the interview question "what did the AI get wrong?"
 - The brief's time budget is 3–5 hours, with a 2-day deadline. Prefer a clear, working pipeline over extra features.
 - Setup steps only the user can do: create a Groq account and API key; create a Google Cloud project, turn on the Sheets API, create a service account, and share the Sheet with it.
+- Outage detection changed after review: the first design used keyword matching as a backup to the Category. The user rejected it because keywords don't understand meaning and can be the part that gets it wrong. It is replaced by the Outage Signal, a second AI judgement made during enrichment. The design accepts some false Escalations to avoid missed outages, and measures them with the false-alarm samples.
 - Write the documentation after the pipeline runs, so that it describes what really happened, including mistakes.

@@ -7,6 +7,7 @@
 **Status:** ready-for-agent
 
 - [ ] The five edge-case samples from the spec are in their own samples file
+- [ ] False-alarm samples (sound like an outage, aren't one, e.g. "we had an outage last year, all fine now", "one user can't see the dashboard") are included; the table reports false Escalations as a separate count
 - [ ] The expectations file lists, per sample, the acceptable Categories, the expected final Queue, the expected escalated value, and any required Escalation Reasons
 - [ ] The evaluation command prints one row per sample and a total for each set; a miss does not stop the run
 - [ ] It also checks that each Triage Record has every schema field
