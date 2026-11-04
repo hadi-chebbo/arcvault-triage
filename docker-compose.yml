@@ -1,0 +1,17 @@
+# n8n for the ArcVault triage pipeline. Start with: npm run n8n:up
+services:
+  n8n:
+    image: n8nio/n8n:2.46.6 # exact stable tag (the "stable" tag pointed to 2.46.6 on 2026-11-04)
+    container_name: arcvault-n8n
+    ports:
+      - "5678:5678"
+    env_file: .env # GROQ_API_KEY lives here (git-ignored)
+    environment:
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=false # lets the Code node read GROQ_API_KEY
+      - GENERIC_TIMEZONE=America/Toronto
+      - TZ=America/Toronto
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:
