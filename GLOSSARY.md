@@ -76,7 +76,7 @@ _Avoid_: Destination, bucket, team
 The Queue a Request's Category maps to, before escalation is considered.
 
 **Escalation**:
-Sending a Triage Record to the Escalation Queue so a human reviews it first, instead of its Standard Queue. It happens when Confidence is below 0.70, the Category is Incident/Outage, the Request uses outage language, or the Overcharge is above $500.
+Sending a Triage Record to the Escalation Queue so a human reviews it first, instead of its Standard Queue. It happens when Confidence is below 0.70, the Category is Incident/Outage, the Request uses outage language, the Overcharge is above $500, or an AI step failed.
 _Avoid_: Fallback, human review flag
 
 **Escalation Reason**:

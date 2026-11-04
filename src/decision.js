@@ -3,8 +3,10 @@
 //
 // Input:  { request: { message }, classification, enrichment }
 //         classification / enrichment are the parsed AI answers, or { failed: true }
-//         when that AI step still failed after its retries.
-// Output: { standard_queue, overcharge, escalated, escalation_reasons, final_queue }
+//         (or null) when that AI step still failed after its retries.
+// Returns the routing fields of the Triage Record:
+//         { standard_queue, overcharge, escalated, escalation_reasons, final_queue }
+// Anything malformed fails closed: it escalates with ai_failure rather than slipping through.
 
 const STANDARD_QUEUES = {
   "Bug Report": "Engineering",
@@ -17,8 +19,8 @@ const STANDARD_QUEUES = {
 const CONFIDENCE_THRESHOLD = 0.7;
 const OVERCHARGE_THRESHOLD = 500;
 
-// Whole phrases only, so "download" never matches "down".
-const OUTAGE_WORDING = /\b(outages?|down for|all users|multiple users|stopped loading)\b/i;
+// Whole phrases only, so "download" never matches "down". \s+ lets a phrase wrap across lines.
+const OUTAGE_LANGUAGE = /\b(outages?|down\s+for|all\s+users|multiple\s+users|stopped\s+loading)\b/i;
 
 // Charged minus expected, rounded to cents. Null unless both amounts are numbers.
 function overchargeOf(amounts) {
@@ -27,18 +29,21 @@ function overchargeOf(amounts) {
 }
 
 function decide({ request, classification, enrichment }) {
-  const classified = !classification.failed;
-  const enriched = !enrichment.failed;
-  const standardQueue = (classified && STANDARD_QUEUES[classification.category]) || null;
+  const classified = Boolean(classification) && !classification.failed;
+  const enriched = Boolean(enrichment) && !enrichment.failed;
+  const category = classified ? classification.category : undefined;
+  const confidence = classified ? classification.confidence : undefined;
+  const confidenceValid = typeof confidence === "number" && confidence >= 0 && confidence <= 1;
+  const standardQueue = Object.hasOwn(STANDARD_QUEUES, category) ? STANDARD_QUEUES[category] : null;
   const overcharge = enriched ? overchargeOf(enrichment.amounts) : null;
 
   // Checked in spec order; every reason that applies is kept.
   const reasons = [];
-  if (classified && classification.confidence < CONFIDENCE_THRESHOLD) reasons.push("low_confidence");
-  if (classified && classification.category === "Incident/Outage") reasons.push("incident");
-  if (OUTAGE_WORDING.test(request.message)) reasons.push("outage_keywords");
-  if (overcharge !== null && overcharge > OVERCHARGE_THRESHOLD) reasons.push("billing_error_over_500");
-  if (standardQueue === null || !enriched) reasons.push("ai_failure");
+  if (confidenceValid && confidence < CONFIDENCE_THRESHOLD) reasons.push("low_confidence");
+  if (category === "Incident/Outage") reasons.push("incident");
+  if (OUTAGE_LANGUAGE.test(request.message)) reasons.push("outage_keywords");
+  if (overcharge !== null && overcharge > OVERCHARGE_THRESHOLD) reasons.push("overcharge_over_500");
+  if (standardQueue === null || !confidenceValid || !enriched) reasons.push("ai_failure");
 
   const escalated = reasons.length > 0;
   return {

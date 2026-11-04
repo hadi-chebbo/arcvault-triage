@@ -105,7 +105,7 @@ test("sample #3: $1,240 charged against $980 is a $260 Overcharge and goes to Bi
 test("an Overcharge of $501 escalates", () => {
   const result = decide(billing({ charged: 1481, expected: 980 }));
   assert.equal(result.overcharge, 501);
-  assert.deepEqual(result.escalation_reasons, ["billing_error_over_500"]);
+  assert.deepEqual(result.escalation_reasons, ["overcharge_over_500"]);
   assert.equal(result.final_queue, "Escalation");
 });
 
@@ -118,7 +118,7 @@ test("an Overcharge of exactly $500 does not escalate", () => {
 test("cents are kept exact: $1,000.10 against $500.00 is a $500.10 Overcharge and escalates", () => {
   const result = decide(billing({ charged: 1000.1, expected: 500 }));
   assert.equal(result.overcharge, 500.1);
-  assert.deepEqual(result.escalation_reasons, ["billing_error_over_500"]);
+  assert.deepEqual(result.escalation_reasons, ["overcharge_over_500"]);
 });
 
 for (const [label, amounts] of [
@@ -168,4 +168,52 @@ test("sample #5 shape: every reason that applies is recorded, in spec order", ()
     })
   );
   assert.deepEqual(result.escalation_reasons, ["low_confidence", "incident", "outage_keywords"]);
+});
+
+test("outage wording split across a line break still escalates", () => {
+  const result = decide(input({ message: "Since noon multiple\nusers see a blank page." }));
+  assert.deepEqual(result.escalation_reasons, ["outage_keywords"]);
+});
+
+test('the plural "outages" counts as outage wording', () => {
+  const result = decide(input({ message: "We keep having outages every morning." }));
+  assert.deepEqual(result.escalation_reasons, ["outage_keywords"]);
+});
+
+for (const step of ["classification", "enrichment"]) {
+  test(`a missing ${step} is treated as an AI failure instead of crashing`, () => {
+    const result = decide({ ...input(), [step]: null });
+    assert.ok(result.escalation_reasons.includes("ai_failure"));
+    assert.equal(result.final_queue, "Escalation");
+  });
+}
+
+for (const confidence of [undefined, "0.9", 1.5, -0.1]) {
+  test(`a Confidence of ${JSON.stringify(confidence)} is treated as an AI failure`, () => {
+    const result = decide(input({ classification: { confidence } }));
+    assert.deepEqual(result.escalation_reasons, ["ai_failure"]);
+    assert.equal(result.final_queue, "Escalation");
+  });
+}
+
+test("reasons from every rule that can apply together are recorded in spec order", () => {
+  const result = decide(
+    input({
+      message: "Total outage, and you overcharged us.",
+      classification: { category: "Spam", confidence: 0.4 },
+      enrichment: { amounts: { charged: 2000, expected: 980 } },
+    })
+  );
+  assert.deepEqual(result.escalation_reasons, [
+    "low_confidence",
+    "outage_keywords",
+    "overcharge_over_500",
+    "ai_failure",
+  ]);
+});
+
+test('a Category that matches a built-in name like "toString" is still unknown', () => {
+  const result = decide(input({ classification: { category: "toString" } }));
+  assert.equal(result.standard_queue, null);
+  assert.deepEqual(result.escalation_reasons, ["ai_failure"]);
 });

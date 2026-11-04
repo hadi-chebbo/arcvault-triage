@@ -136,7 +136,7 @@ Rules:
   - `low_confidence`: Confidence < 0.70 (0.70 itself does not escalate)
   - `incident`: Category is Incident/Outage
   - `outage_keywords`: case-insensitive whole-phrase match on "outage", "down for", "all users", "multiple users", "stopped loading"
-  - `billing_error_over_500`: Overcharge > 500 ($500 exactly does not escalate)
+  - `overcharge_over_500`: Overcharge > 500 ($500 exactly does not escalate)
   - `ai_failure`: either AI step failed after retries
 - `final_queue` is Escalation if any reason applies, otherwise the Standard Queue.
 - Overcharge = charged − expected. The AI never does this arithmetic.
@@ -189,7 +189,7 @@ A good test exercises behavior through a public interface and asserts on outcome
   Sample #4 is ambiguous on purpose. If the model is confident about it, record that as a finding: decide whether the prompt or the expectation should change, and don't hide the result.
 
 - Edge-case samples:
-  - an Overcharge above $500 → Billing Issue, escalated with `billing_error_over_500`
+  - an Overcharge above $500 → Billing Issue, escalated with `overcharge_over_500`
   - a message containing "download" → not escalated by keywords
   - a mixed bug-and-billing message → one Category, with the choice explained in the reasoning
   - a vague one-liner → low Confidence, escalated
