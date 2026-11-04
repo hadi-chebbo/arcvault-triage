@@ -2,38 +2,46 @@
   {
     "id": "msg-001",
     "source": "Email",
-    "received_at": "2026-11-04T17:43:05.977Z",
+    "received_at": "2026-11-04T17:45:19.870Z",
     "message": "Hi, I tried logging in this morning and keep getting a 403 error. My account is arcvault.io/user/jsmith. This started after your update last Tuesday.",
     "category": "Bug Report",
     "priority": "Medium",
     "confidence": 0.96,
-    "reasoning": "User reports a 403 login error affecting only their account, indicating a single-user bug.",
+    "reasoning": "A single user reports being unable to log in with a 403 error, indicating a bug affecting that account.",
     "core_issue": "Customer cannot log in and receives a 403 error.",
     "identifiers": {
-      "account": "arcvault.io/user/jsmith"
+      "error_code": "403",
+      "account": "arcvault.io/user/jsmith",
+      "started_at": "after your update last Tuesday"
     },
-    "amounts": null,
+    "amounts": {
+      "charged": null,
+      "expected": null,
+      "overcharge": null
+    },
     "urgency_signal": "medium",
     "outage_signal": false,
     "standard_queue": "Engineering",
     "escalated": false,
     "escalation_reasons": [],
     "final_queue": "Engineering",
-    "summary": "The customer reports being unable to log in, receiving a 403 error after the recent update. The issue affects the account arcvault.io/user/jsmith. They are requesting assistance to resolve the login problem.",
+    "summary": "The user reports being unable to log in, receiving a 403 error. The issue began after the recent update last Tuesday and affects the account arcvault.io/user/jsmith. They are requesting assistance to resolve the login problem.",
     "model": "openai/gpt-oss-120b",
     "ai_errors": []
   },
   {
     "id": "msg-002",
     "source": "Web Form",
-    "received_at": "2026-11-04T17:43:09.041Z",
+    "received_at": "2026-11-04T17:45:22.917Z",
     "message": "We'd love to see a bulk export feature for our audit logs. We're a compliance-heavy org and this would save us hours every month.",
     "category": "Feature Request",
     "priority": "Low",
     "confidence": 0.96,
-    "reasoning": "The user is asking for a new bulk export capability, which is a feature request.",
-    "core_issue": "Request for a bulk export feature for audit logs.",
-    "identifiers": {},
+    "reasoning": "The customer is asking for a new bulk export capability, which is a feature request.",
+    "core_issue": "Customer requests a bulk export feature for audit logs",
+    "identifiers": {
+      "feature": "audit logs"
+    },
     "amounts": null,
     "urgency_signal": "low",
     "outage_signal": false,
@@ -41,20 +49,20 @@
     "escalated": false,
     "escalation_reasons": [],
     "final_queue": "Product",
-    "summary": "The customer is asking for a bulk export capability for their audit logs. They are a compliance-heavy organization and believe this feature would save them hours each month.",
+    "summary": "The customer wants a bulk export capability for their audit logs. They are a compliance-heavy organization and believe this would save them hours each month. They are requesting this feature be added to the product.",
     "model": "openai/gpt-oss-120b",
     "ai_errors": []
   },
   {
     "id": "msg-003",
     "source": "Support Portal",
-    "received_at": "2026-11-04T17:43:12.034Z",
+    "received_at": "2026-11-04T17:45:25.260Z",
     "message": "Invoice #8821 shows a charge of $1,240 but our contract rate is $980/month. Can someone look into this?",
     "category": "Billing Issue",
     "priority": "Medium",
     "confidence": 0.96,
     "reasoning": "The request disputes an invoice charge, fitting the Billing Issue category.",
-    "core_issue": "The invoice amount does not match the contracted rate.",
+    "core_issue": "Invoice #8821 was charged $1,240 instead of the contracted $980/month.",
     "identifiers": {
       "invoice_number": "8821"
     },
@@ -69,44 +77,57 @@
     "escalated": false,
     "escalation_reasons": [],
     "final_queue": "Billing",
-    "summary": "Invoice #8821 shows a charge of $1,240, while the contract rate is $980 per month. The customer is requesting a review and correction of the overcharge.",
+    "summary": "The customer sees that Invoice #8821 shows a charge of $1,240, which exceeds their contract rate of $980 per month. They are asking for the discrepancy to be investigated.",
     "model": "openai/gpt-oss-120b",
     "ai_errors": []
   },
   {
     "id": "msg-004",
     "source": "Email",
-    "received_at": "2026-11-04T17:43:14.149Z",
+    "received_at": "2026-11-04T17:45:28.659Z",
     "message": "I'm not sure if this is the right place to ask, but is there a way to set up SSO with Okta? We're evaluating switching our auth provider.",
-    "category": "Technical Question",
-    "priority": "Low",
-    "confidence": 0.75,
-    "reasoning": "The user asks how to set up SSO with Okta, which is a configuration question rather than a request for a new feature.",
-    "core_issue": "Customer asks if SSO can be set up with Okta",
-    "identifiers": {},
+    "category": null,
+    "priority": null,
+    "confidence": null,
+    "reasoning": null,
+    "core_issue": "Customer wants to know if SSO with Okta can be set up",
+    "identifiers": {
+      "integration": "Okta"
+    },
     "amounts": null,
     "urgency_signal": "low",
     "outage_signal": false,
-    "standard_queue": "Customer Success",
-    "escalated": false,
-    "escalation_reasons": [],
-    "final_queue": "Customer Success",
-    "summary": "The customer wants to know whether ArcVault supports SSO integration with Okta. They are evaluating switching their authentication provider and need guidance on setting this up.",
+    "standard_queue": null,
+    "escalated": true,
+    "escalation_reasons": [
+      "ai_failure"
+    ],
+    "final_queue": "Escalation",
+    "summary": "The customer is evaluating a switch to Okta for authentication and asks whether ArcVault supports SSO integration with Okta. They are seeking guidance on setting up this integration.",
     "model": "openai/gpt-oss-120b",
-    "ai_errors": []
+    "ai_errors": [
+      "classification: API error: Request failed with status code 429"
+    ]
   },
   {
     "id": "msg-005",
     "source": "Web Form",
-    "received_at": "2026-11-04T17:43:18.387Z",
+    "received_at": "2026-11-04T17:45:37.565Z",
     "message": "Your dashboard stopped loading for us around 2pm EST. Checked our end — it's definitely on yours. Multiple users affected.",
     "category": "Incident/Outage",
     "priority": "High",
     "confidence": 0.97,
-    "reasoning": "Multiple users report the dashboard not loading, indicating a service-wide outage.",
+    "reasoning": "Multiple users cannot load the dashboard, indicating a service-wide outage.",
     "core_issue": "Dashboard stopped loading for the customer",
-    "identifiers": {},
-    "amounts": null,
+    "identifiers": {
+      "feature": "dashboard",
+      "started_at": "around 2pm EST"
+    },
+    "amounts": {
+      "charged": null,
+      "expected": null,
+      "overcharge": null
+    },
     "urgency_signal": "high",
     "outage_signal": true,
     "standard_queue": "Engineering (on-call)",
@@ -116,7 +137,7 @@
       "outage_signal"
     ],
     "final_queue": "Escalation",
-    "summary": "The dashboard stopped loading around 2 pm EST and multiple users are unable to access it. The problem appears to be on ArcVault’s side. The customer is requesting the issue be resolved promptly.",
+    "summary": "The customer's dashboard has not loaded since around 2pm EST, affecting multiple users. They have confirmed the issue is on ArcVault's side and need the problem resolved promptly.",
     "model": "openai/gpt-oss-120b",
     "ai_errors": []
   }
