@@ -1,19 +1,39 @@
-// Build Response: the reply the webhook sends back. On an AI failure the
-// classification fields are null and an ai_failure error explains why.
-const { id, source, received_at, message, classification, model } = $input.first().json;
-const failed = Boolean(classification.failed);
+// Build Response: the full Triage Record the webhook sends back, fields in the order of the spec.
+// When an AI step failed, its fields are null and ai_errors says why.
+const { id, source, received_at, message, classification, enrichment, decision, model } = $input.first().json;
+const classified = !classification.failed;
+const enriched = !enrichment.failed;
 
-const reply = {
-  id,
-  source,
-  received_at,
-  message,
-  category: failed ? null : classification.category,
-  priority: failed ? null : classification.priority,
-  confidence: failed ? null : classification.confidence,
-  reasoning: failed ? null : classification.reasoning,
-  model,
-};
-if (failed) reply.error = { type: "ai_failure", reason: classification.error };
+const aiErrors = [];
+if (!classified) aiErrors.push("classification: " + classification.error);
+if (!enriched) aiErrors.push("enrichment: " + enrichment.error);
 
-return [{ json: reply }];
+// amounts gets the Overcharge from the decision module, or stays null.
+const amounts = enriched && enrichment.amounts ? { ...enrichment.amounts, overcharge: decision.overcharge } : null;
+
+return [
+  {
+    json: {
+      id,
+      source,
+      received_at,
+      message,
+      category: classified ? classification.category : null,
+      priority: classified ? classification.priority : null,
+      confidence: classified ? classification.confidence : null,
+      reasoning: classified ? classification.reasoning : null,
+      core_issue: enriched ? enrichment.core_issue : null,
+      identifiers: enriched ? enrichment.identifiers : null,
+      amounts,
+      urgency_signal: enriched ? enrichment.urgency_signal : null,
+      outage_signal: enriched ? enrichment.outage_signal : null,
+      standard_queue: decision.standard_queue,
+      escalated: decision.escalated,
+      escalation_reasons: decision.escalation_reasons,
+      final_queue: decision.final_queue,
+      summary: enriched ? enrichment.summary : null,
+      model,
+      ai_errors: aiErrors,
+    },
+  },
+];
