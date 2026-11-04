@@ -1,0 +1,10 @@
+{
+  "name": "arcvault-triage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI intake and triage pipeline for ArcVault (Valsoft AI Engineer assessment)",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\""
+  }
+}
