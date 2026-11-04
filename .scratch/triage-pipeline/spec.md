@@ -144,7 +144,7 @@ Rules:
 ### AI calls
 
 - Provider: Groq through its OpenAI-compatible chat completions API, with JSON response mode and temperature 0.
-- Model: Llama 3.3 70B. Check during setup that this model is still offered on Groq's free tier; if it isn't, use Groq's closest current Llama model and record the change in the write-up.
+- Model: `openai/gpt-oss-120b` (open-weight, Apache 2.0). Llama 3.3 70B, the original choice, is no longer offered on Groq, and no general-purpose Llama model is left. gpt-oss-120b was tested against `qwen/qwen3.8-27b` on sample #5: both returned valid JSON, and gpt-oss-120b is the larger model.
 - Call 1 (classification) receives the Request text. Its prompt defines each Category in one line, includes a tie-break rule between Technical Question and Feature Request, and spells out the Priority rules and the Confidence scale.
 - Call 2 (enrichment) receives the Request text and the Category from call 1. It also returns the Outage Signal, judged from the text on its own, not copied from the Category. It must return only Identifiers that appear in the text, and amounts as plain numbers.
 - Each call is tried up to 3 times in total (the first try plus 2 retries) on an invalid response or an API error.
@@ -195,7 +195,11 @@ A good test exercises behavior through a public interface and asserts on outcome
   - a vague one-liner → low Confidence, escalated
   - a non-English message → classified correctly
 
-### Seam B: the decision module
+### Seam B: the pure rule modules (decision module and AI response validator)
+
+The AI response validator was added to this seam during ticket 02, with the user's agreement: broken AI answers can't be produced on demand through the webhook, so this is the only way to prove they are rejected.
+
+Decision module:
 
 - Unit tests call the decision function directly with hand-written classification and enrichment inputs. No AI, no n8n.
 - They cover:

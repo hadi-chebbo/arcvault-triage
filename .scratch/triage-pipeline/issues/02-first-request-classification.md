@@ -11,7 +11,8 @@
 - [ ] The intake webhook accepts a JSON Request (Source, message) and rejects an empty message with a clear error
 - [ ] Each Request gets an ID and a received-at timestamp
 - [ ] The classification prompt is a file in the repo and is the source of truth for the text used in n8n
-- [ ] Groq is called in JSON mode at temperature 0; the model in use is confirmed to exist on the free tier
+- [ ] Groq is called with `openai/gpt-oss-120b` in JSON mode at temperature 0
+- [ ] The AI response validator is a pure module with unit tests (seam B): good answers pass; broken JSON, unknown Category or Priority, and Confidence that is missing, non-numeric or outside 0–1 are rejected
 - [ ] The response is checked: valid JSON, Category and Priority from the allowed lists, Confidence a number from 0 to 1; an invalid response or API error is retried up to 2 times, then marked as an AI failure
 - [ ] The webhook replies with Category, Priority, Confidence and reasoning
 - [ ] The sender script posts sample #1 and prints the reply

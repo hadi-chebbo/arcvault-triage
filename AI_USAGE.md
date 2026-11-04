@@ -8,5 +8,7 @@ Claude's first design detected outages in two ways: the classification model cho
 
 ## Smaller fixes
 
+- Claude recommended Llama 3.3 70B on Groq from its own knowledge, but when we checked Groq's live model list, the model had been retired. We tested the two remaining general-purpose models on a sample and switched to `openai/gpt-oss-120b`. Lesson: check what a provider actually offers instead of trusting an AI's memory.
+
 - The test command Claude first wrote (`node --test test/`) failed on Node 26, which no longer accepts a folder name. It was changed to a file pattern.
 - The code review found that the first version of the routing rules let malformed AI answers through (a missing confidence score, a null response, a category like "toString"). They were fixed so that anything malformed escalates to a human.
