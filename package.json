@@ -11,6 +11,7 @@
     "sync": "node scripts/sync-workflow.js",
     "sync:check": "node scripts/sync-workflow.js --check",
     "n8n:import": "node scripts/import-workflow.js",
-    "send": "node scripts/send-samples.js"
+    "send": "node scripts/send-samples.js",
+    "eval": "node scripts/evaluate.js"
   }
 }

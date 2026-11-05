@@ -1,0 +1,636 @@
+[
+  {
+    "id": "edge-001",
+    "run": 1,
+    "record": {
+      "id": "edge-001",
+      "source": "Email",
+      "received_at": "2026-11-05T15:41:37.752Z",
+      "message": "Invoice #9104 billed us $2,150 but our agreed rate is $1,400/month. Please correct this before our finance close on Friday.",
+      "category": "Billing Issue",
+      "priority": "Medium",
+      "confidence": 0.96,
+      "reasoning": "The request disputes an invoice amount and asks for correction, which is a billing issue.",
+      "core_issue": "Customer was overcharged on invoice #9104 and requests a correction.",
+      "identifiers": {
+        "invoice_number": "9104"
+      },
+      "amounts": {
+        "charged": 2150,
+        "expected": 1400,
+        "overcharge": 750
+      },
+      "urgency_signal": "high",
+      "outage_signal": false,
+      "standard_queue": "Billing",
+      "escalated": true,
+      "escalation_reasons": [
+        "overcharge_over_500"
+      ],
+      "final_queue": "Escalation",
+      "summary": "Invoice #9104 shows a charge of $2,150 instead of the agreed $1,400/month. The customer asks for the invoice to be corrected before their finance close on Friday.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-002",
+    "run": 1,
+    "record": {
+      "id": "edge-002",
+      "source": "Web Form",
+      "received_at": "2026-11-05T15:41:59.793Z",
+      "message": "We had an outage with ArcVault last year, but everything has been fine since. Quick question: how do I add a new admin user to our workspace?",
+      "category": "Technical Question",
+      "priority": "Low",
+      "confidence": 0.96,
+      "reasoning": "The user asks how to add a new admin user, which is a how‑to question about existing functionality.",
+      "core_issue": "Customer asks how to add a new admin user to their workspace.",
+      "identifiers": {},
+      "amounts": null,
+      "urgency_signal": "low",
+      "outage_signal": false,
+      "standard_queue": "Customer Success",
+      "escalated": false,
+      "escalation_reasons": [],
+      "final_queue": "Customer Success",
+      "summary": "The customer notes a past outage last year but says everything is fine now. They want instructions on adding a new admin user to their workspace.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-003",
+    "run": 1,
+    "record": {
+      "id": "edge-003",
+      "source": "Support Portal",
+      "received_at": "2026-11-05T15:42:22.423Z",
+      "message": "One of our users, Maria, can't see the dashboard: it just shows a blank page for her. Everyone else on the team is fine.",
+      "category": "Bug Report",
+      "priority": "Medium",
+      "confidence": 0.96,
+      "reasoning": "Only one user experiences a blank dashboard, indicating a bug affecting a single account",
+      "core_issue": "User Maria cannot see the dashboard, only a blank page appears for her.",
+      "identifiers": {
+        "feature": "dashboard"
+      },
+      "amounts": null,
+      "urgency_signal": "low",
+      "outage_signal": false,
+      "standard_queue": "Engineering",
+      "escalated": false,
+      "escalation_reasons": [],
+      "final_queue": "Engineering",
+      "summary": "Maria sees a blank page when accessing the dashboard, whereas her teammates can view it normally. The problem seems isolated to her account. She needs the dashboard to display correctly.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-004",
+    "run": 1,
+    "record": {
+      "id": "edge-004",
+      "source": "Email",
+      "received_at": "2026-11-05T15:42:44.970Z",
+      "message": "The CSV export button throws error 500 every time, and on top of that I was charged twice for March ($49 each).",
+      "category": "Bug Report",
+      "priority": "Medium",
+      "confidence": 0.65,
+      "reasoning": "The request reports a functional error (CSV export 500) alongside a billing complaint, making the bug aspect slightly more prominent but ambiguous.",
+      "core_issue": "The CSV export button returns a 500 error and the customer was charged twice for March ($49 each).",
+      "identifiers": {
+        "error_code": "500",
+        "feature": "CSV export"
+      },
+      "amounts": {
+        "charged": 49,
+        "expected": null,
+        "overcharge": null
+      },
+      "urgency_signal": "medium",
+      "outage_signal": false,
+      "standard_queue": "Engineering",
+      "escalated": true,
+      "escalation_reasons": [
+        "low_confidence"
+      ],
+      "final_queue": "Escalation",
+      "summary": "The customer reports that clicking the CSV export button always results in a 500 error. Additionally, they were billed twice for March at $49 each. They need the export functionality fixed and the duplicate charge addressed.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-005",
+    "run": 1,
+    "record": {
+      "id": "edge-005",
+      "source": "Web Form",
+      "received_at": "2026-11-05T15:43:12.995Z",
+      "message": "it doesn't work",
+      "category": "Bug Report",
+      "priority": "Medium",
+      "confidence": 0.6,
+      "reasoning": "The brief statement suggests a single user is experiencing a problem, fitting a bug report despite limited detail.",
+      "core_issue": "The system does not work as expected.",
+      "identifiers": {},
+      "amounts": null,
+      "urgency_signal": "low",
+      "outage_signal": false,
+      "standard_queue": "Engineering",
+      "escalated": true,
+      "escalation_reasons": [
+        "low_confidence"
+      ],
+      "final_queue": "Escalation",
+      "summary": "The customer reports that the system does not work. No additional details or context were provided. They are requesting assistance to resolve the issue.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-006",
+    "run": 1,
+    "record": {
+      "id": "edge-006",
+      "source": "Email",
+      "received_at": "2026-11-05T15:43:35.438Z",
+      "message": "Bonjour, depuis 9h ce matin aucun de nos 40 utilisateurs ne peut se connecter à ArcVault. Toute l'équipe est bloquée.",
+      "category": "Incident/Outage",
+      "priority": "High",
+      "confidence": 0.97,
+      "reasoning": "Multiple users (40) are unable to log in, indicating a service-wide outage.",
+      "core_issue": "Users cannot connect to ArcVault since 9 am this morning, blocking the entire team.",
+      "identifiers": {
+        "started_at": "9h ce matin"
+      },
+      "amounts": null,
+      "urgency_signal": "high",
+      "outage_signal": true,
+      "standard_queue": "Engineering (on-call)",
+      "escalated": true,
+      "escalation_reasons": [
+        "incident",
+        "outage_signal"
+      ],
+      "final_queue": "Escalation",
+      "summary": "Since 9 am this morning, none of the customer's 40 users can log into ArcVault, blocking the entire team. They need the service restored promptly.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-001",
+    "run": 2,
+    "record": {
+      "id": "edge-001",
+      "source": "Email",
+      "received_at": "2026-11-05T15:43:57.940Z",
+      "message": "Invoice #9104 billed us $2,150 but our agreed rate is $1,400/month. Please correct this before our finance close on Friday.",
+      "category": "Billing Issue",
+      "priority": "Medium",
+      "confidence": 0.96,
+      "reasoning": "The request disputes an invoice amount and asks for correction, which is a billing issue.",
+      "core_issue": "Customer was overcharged on Invoice #9104 and requests correction before finance close on Friday.",
+      "identifiers": {
+        "invoice_number": "9104"
+      },
+      "amounts": {
+        "charged": 2150,
+        "expected": 1400,
+        "overcharge": 750
+      },
+      "urgency_signal": "high",
+      "outage_signal": false,
+      "standard_queue": "Billing",
+      "escalated": true,
+      "escalation_reasons": [
+        "overcharge_over_500"
+      ],
+      "final_queue": "Escalation",
+      "summary": "Invoice #9104 billed $2,150 instead of the agreed $1,400/month. The customer asks for the invoice to be corrected before their finance close on Friday.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-002",
+    "run": 2,
+    "record": {
+      "id": "edge-002",
+      "source": "Web Form",
+      "received_at": "2026-11-05T15:44:20.608Z",
+      "message": "We had an outage with ArcVault last year, but everything has been fine since. Quick question: how do I add a new admin user to our workspace?",
+      "category": "Technical Question",
+      "priority": "Low",
+      "confidence": 0.96,
+      "reasoning": "The user asks how to add a new admin user, which is a how‑to question about existing functionality.",
+      "core_issue": "Customer asks how to add a new admin user to their workspace",
+      "identifiers": {},
+      "amounts": null,
+      "urgency_signal": "low",
+      "outage_signal": false,
+      "standard_queue": "Customer Success",
+      "escalated": false,
+      "escalation_reasons": [],
+      "final_queue": "Customer Success",
+      "summary": "The customer mentions a past outage last year but states the service is fine now. They are requesting instructions on adding a new admin user to their ArcVault workspace.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-003",
+    "run": 2,
+    "record": {
+      "id": "edge-003",
+      "source": "Support Portal",
+      "received_at": "2026-11-05T15:44:42.481Z",
+      "message": "One of our users, Maria, can't see the dashboard: it just shows a blank page for her. Everyone else on the team is fine.",
+      "category": "Bug Report",
+      "priority": "Medium",
+      "confidence": 0.96,
+      "reasoning": "Only one user experiences a blank dashboard, indicating a bug affecting a single account",
+      "core_issue": "User Maria cannot see the dashboard, it shows a blank page",
+      "identifiers": {
+        "feature": "dashboard"
+      },
+      "amounts": null,
+      "urgency_signal": "medium",
+      "outage_signal": false,
+      "standard_queue": "Engineering",
+      "escalated": false,
+      "escalation_reasons": [],
+      "final_queue": "Engineering",
+      "summary": "Maria sees a blank page when accessing the dashboard, while other team members can view it normally. The problem appears isolated to her account. She needs the dashboard to display correctly.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-004",
+    "run": 2,
+    "record": {
+      "id": "edge-004",
+      "source": "Email",
+      "received_at": "2026-11-05T15:45:05.049Z",
+      "message": "The CSV export button throws error 500 every time, and on top of that I was charged twice for March ($49 each).",
+      "category": "Billing Issue",
+      "priority": "Medium",
+      "confidence": 0.6,
+      "reasoning": "The request includes a dispute about being charged twice, which is a clear billing issue, though it also mentions a bug, making the classification ambiguous.",
+      "core_issue": "The CSV export button returns a 500 error and the customer was charged twice for March ($49 each).",
+      "identifiers": {
+        "error_code": "500",
+        "feature": "CSV export"
+      },
+      "amounts": {
+        "charged": 49,
+        "expected": null,
+        "overcharge": null
+      },
+      "urgency_signal": "medium",
+      "outage_signal": false,
+      "standard_queue": "Billing",
+      "escalated": true,
+      "escalation_reasons": [
+        "low_confidence"
+      ],
+      "final_queue": "Escalation",
+      "summary": "The CSV export button is failing with a 500 error every time it is used. The customer also noticed they were billed twice for March at $49 each. They need the export feature fixed and the duplicate charge addressed.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-005",
+    "run": 2,
+    "record": {
+      "id": "edge-005",
+      "source": "Web Form",
+      "received_at": "2026-11-05T15:45:27.983Z",
+      "message": "it doesn't work",
+      "category": "Bug Report",
+      "priority": "Medium",
+      "confidence": 0.6,
+      "reasoning": "The user reports a problem that something doesn't work, indicating a likely single‑user bug.",
+      "core_issue": "The customer reports that the system does not work.",
+      "identifiers": {},
+      "amounts": null,
+      "urgency_signal": "low",
+      "outage_signal": false,
+      "standard_queue": "Engineering",
+      "escalated": true,
+      "escalation_reasons": [
+        "low_confidence"
+      ],
+      "final_queue": "Escalation",
+      "summary": "The customer reports that the system does not work. No additional details are provided. They are requesting assistance to resolve the issue.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-006",
+    "run": 2,
+    "record": {
+      "id": "edge-006",
+      "source": "Email",
+      "received_at": "2026-11-05T15:45:50.405Z",
+      "message": "Bonjour, depuis 9h ce matin aucun de nos 40 utilisateurs ne peut se connecter à ArcVault. Toute l'équipe est bloquée.",
+      "category": "Incident/Outage",
+      "priority": "High",
+      "confidence": 0.97,
+      "reasoning": "Multiple users (40) are unable to log in, indicating a service-wide outage.",
+      "core_issue": "Users cannot connect to ArcVault since 9 am, blocking the entire team.",
+      "identifiers": {
+        "started_at": "9h ce matin"
+      },
+      "amounts": null,
+      "urgency_signal": "high",
+      "outage_signal": true,
+      "standard_queue": "Engineering (on-call)",
+      "escalated": true,
+      "escalation_reasons": [
+        "incident",
+        "outage_signal"
+      ],
+      "final_queue": "Escalation",
+      "summary": "Since 9 am this morning, none of the 40 users can log into ArcVault, blocking the entire team. The customer is requesting immediate restoration of access.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-001",
+    "run": 3,
+    "record": {
+      "id": "edge-001",
+      "source": "Email",
+      "received_at": "2026-11-05T15:46:14.164Z",
+      "message": "Invoice #9104 billed us $2,150 but our agreed rate is $1,400/month. Please correct this before our finance close on Friday.",
+      "category": "Billing Issue",
+      "priority": "Medium",
+      "confidence": 0.96,
+      "reasoning": "The request disputes an invoice amount and asks for correction, which is a billing issue.",
+      "core_issue": "The customer was billed $2,150 on Invoice #9104 instead of the agreed $1,400/month and requests a correction.",
+      "identifiers": {
+        "invoice_number": "9104"
+      },
+      "amounts": {
+        "charged": 2150,
+        "expected": 1400,
+        "overcharge": 750
+      },
+      "urgency_signal": "high",
+      "outage_signal": false,
+      "standard_queue": "Billing",
+      "escalated": true,
+      "escalation_reasons": [
+        "overcharge_over_500"
+      ],
+      "final_queue": "Escalation",
+      "summary": "Invoice #9104 shows a charge of $2,150, which exceeds the agreed rate of $1,400 per month. The customer asks for the invoice to be corrected before their finance close on Friday.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-002",
+    "run": 3,
+    "record": {
+      "id": "edge-002",
+      "source": "Web Form",
+      "received_at": "2026-11-05T15:46:36.669Z",
+      "message": "We had an outage with ArcVault last year, but everything has been fine since. Quick question: how do I add a new admin user to our workspace?",
+      "category": "Technical Question",
+      "priority": "Low",
+      "confidence": 0.96,
+      "reasoning": "The user asks how to add a new admin user, which is a how‑to configuration question.",
+      "core_issue": "Customer asks how to add a new admin user to their workspace",
+      "identifiers": {},
+      "amounts": null,
+      "urgency_signal": "low",
+      "outage_signal": false,
+      "standard_queue": "Customer Success",
+      "escalated": false,
+      "escalation_reasons": [],
+      "final_queue": "Customer Success",
+      "summary": "The customer mentions a past outage last year but states the service is fine now. They are requesting instructions on adding a new admin user to their ArcVault workspace.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-003",
+    "run": 3,
+    "record": {
+      "id": "edge-003",
+      "source": "Support Portal",
+      "received_at": "2026-11-05T15:46:59.608Z",
+      "message": "One of our users, Maria, can't see the dashboard: it just shows a blank page for her. Everyone else on the team is fine.",
+      "category": "Bug Report",
+      "priority": "Medium",
+      "confidence": 0.96,
+      "reasoning": "Only one user experiences a blank dashboard, indicating a bug affecting a single account.",
+      "core_issue": "User Maria cannot see the dashboard, only a blank page appears for her.",
+      "identifiers": {
+        "feature": "dashboard"
+      },
+      "amounts": null,
+      "urgency_signal": "low",
+      "outage_signal": false,
+      "standard_queue": "Engineering",
+      "escalated": false,
+      "escalation_reasons": [],
+      "final_queue": "Engineering",
+      "summary": "Maria sees a blank page when accessing the dashboard, whereas her teammates can view it normally. The problem seems isolated to her account. She needs the dashboard to display correctly.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-004",
+    "run": 3,
+    "record": {
+      "id": "edge-004",
+      "source": "Email",
+      "received_at": "2026-11-05T15:47:22.435Z",
+      "message": "The CSV export button throws error 500 every time, and on top of that I was charged twice for March ($49 each).",
+      "category": "Bug Report",
+      "priority": "Medium",
+      "confidence": 0.75,
+      "reasoning": "The request reports a 500 error on the CSV export button, a functional problem affecting a single user.",
+      "core_issue": "CSV export button throws error 500 and the customer was charged twice for March ($49 each).",
+      "identifiers": {
+        "error_code": "500",
+        "feature": "CSV export"
+      },
+      "amounts": {
+        "charged": 49,
+        "expected": null,
+        "overcharge": null
+      },
+      "urgency_signal": "medium",
+      "outage_signal": false,
+      "standard_queue": "Engineering",
+      "escalated": false,
+      "escalation_reasons": [],
+      "final_queue": "Engineering",
+      "summary": "The CSV export button returns a 500 error every time it is used. The customer was also billed twice for March at $49 each. They need the export issue resolved and the duplicate charge corrected.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-005",
+    "run": 3,
+    "record": {
+      "id": "edge-005",
+      "source": "Web Form",
+      "received_at": "2026-11-05T15:47:46.426Z",
+      "message": "it doesn't work",
+      "category": "Bug Report",
+      "priority": "Medium",
+      "confidence": 0.6,
+      "reasoning": "The brief statement suggests a single user encountering a problem, indicating a likely bug.",
+      "core_issue": "It doesn't work",
+      "identifiers": {},
+      "amounts": null,
+      "urgency_signal": "low",
+      "outage_signal": false,
+      "standard_queue": "Engineering",
+      "escalated": true,
+      "escalation_reasons": [
+        "low_confidence"
+      ],
+      "final_queue": "Escalation",
+      "summary": "The customer reports that something does not work. No further details are provided, and no specific feature or account is mentioned. They are seeking assistance to resolve the issue.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  },
+  {
+    "id": "edge-006",
+    "run": 3,
+    "record": {
+      "id": "edge-006",
+      "source": "Email",
+      "received_at": "2026-11-05T15:48:09.173Z",
+      "message": "Bonjour, depuis 9h ce matin aucun de nos 40 utilisateurs ne peut se connecter à ArcVault. Toute l'équipe est bloquée.",
+      "category": "Incident/Outage",
+      "priority": "High",
+      "confidence": 0.96,
+      "reasoning": "Multiple users (40) are unable to log in, indicating a service-wide outage.",
+      "core_issue": "No users can connect to ArcVault since 9 am.",
+      "identifiers": {
+        "started_at": "9h ce matin"
+      },
+      "amounts": null,
+      "urgency_signal": "high",
+      "outage_signal": true,
+      "standard_queue": "Engineering (on-call)",
+      "escalated": true,
+      "escalation_reasons": [
+        "incident",
+        "outage_signal"
+      ],
+      "final_queue": "Escalation",
+      "summary": "Since 9 am, none of the 40 users can log into ArcVault, blocking the entire team. The customer is requesting immediate restoration of access.",
+      "model": "openai/gpt-oss-120b",
+      "ai_errors": []
+    },
+    "check": {
+      "status": "pass",
+      "failures": [],
+      "falseEscalation": false
+    }
+  }
+]

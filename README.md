@@ -47,6 +47,18 @@ A whole-file send prints one line per Request and writes the Triage Records as a
 npm test
 ```
 
+## Evaluate
+
+```
+npm run eval                              # both sets, 3 runs each
+npm run eval -- --set edge --runs 2       # one set (required or edge; default all), fewer runs
+npm run eval -- --only msg-004            # one sample
+```
+
+This sends each sample through the workflow and checks every Triage Record against `samples/expectations.json`. It takes about 20 seconds per Request, so the default (11 samples, 3 runs) is about 11 minutes.
+
+It prints one row per run, then totals and the Confidence spread for each set. The records are written to `output/eval/<set>.json`. A miss does not stop the run. AI errors (for example a Groq 429) and failed webhook calls are counted separately from misclassifications.
+
 ## Keeping the workflow in sync
 
 `prompts/classification.md`, `prompts/enrichment.md`, `src/validate.js` and `src/decision.js` are the source of truth (`workflow/code/groq.js` is the Groq call shared by the Classify and Enrich nodes). After editing any of them, run `npm run sync` to copy them into the workflow JSON, then `npm run n8n:import`. `npm run sync:check` fails if the workflow is out of date.
