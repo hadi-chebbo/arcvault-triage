@@ -47,8 +47,11 @@ Each Triage Record is written to two tabs: `All Records`, and the tab for its fi
 
 To point the imported workflow at your own Sheet:
 
-1. Create a Sheet with the six tabs above. Put the 20 Triage Record field names (`id` to `ai_errors`, in the order of `src/sheet-row.js`) in row 1 of every tab.
-2. In n8n, create a Google Sheets OAuth2 credential and sign in with your Google account.
+1. Create a Sheet with the six tabs above. Row 1 of every tab must hold exactly these 20 names, one per column. Values are matched to columns by name, so a misspelled header loses that field:
+   ```
+   id,source,received_at,message,category,priority,confidence,reasoning,core_issue,identifiers,amounts,urgency_signal,outage_signal,standard_queue,escalated,escalation_reasons,final_queue,summary,model,ai_errors
+   ```
+2. In Google Cloud, turn on the Google Sheets API, set up the OAuth consent screen (External, add yourself as a test user), and create a Web application OAuth client with the redirect URI `http://localhost:5678/rest/oauth2-credential/callback`. In n8n, create a Google Sheets OAuth2 credential with that client ID and secret, and sign in with your Google account.
 3. Open the nodes `Write All Records` and `Write Queue Tab`, select that credential, and change the document ID to your Sheet's ID.
 
 The OAuth app is in Testing mode, so Google ends the sign-in after 7 days. Open the credential in n8n and click Reconnect.

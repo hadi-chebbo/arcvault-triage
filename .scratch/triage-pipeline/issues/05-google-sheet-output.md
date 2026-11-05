@@ -20,4 +20,5 @@ Findings from ticket 05:
 - Sheet: "ArcVault Triage", ID `1Malay51uF1p5RbS6VDyXEadtEgMP8sR8GJOKUXUh-tE`.
 - Verified live: after the five required samples, every record is in All Records and in the tab for its final Queue; nested fields read as text (e.g. `charged: 1240; expected: 980; overcharge: 260`).
 - Verified a failed write: with All Records pointed at a missing tab, the webhook still returned the full 20-field Triage Record and the Queue tab write still happened.
-- Two test sends left duplicate rows (msg-001 in All Records and Engineering, msg-002 in Product). Clear them before the demo.
+- Three test sends left duplicate rows (msg-001 in All Records and Engineering, msg-002 in Product, msg-003 in All Records and Billing). Clear them before the demo.
+- Review fixes: the full-record test now uses a fixed record instead of live model output; both Sheets nodes always output an item, so the reply can't stall if a write returns nothing. Not changed: the reply still waits for both Sheet writes (simpler flow; Google writes take well under a second), and the header row must match the field names exactly (the README shows the exact line).

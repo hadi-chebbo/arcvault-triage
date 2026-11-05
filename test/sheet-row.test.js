@@ -110,21 +110,43 @@ test("any other object or array becomes JSON", () => {
   assert.equal(row.summary, "[1,2]");
 });
 
-test("a full record from the sample output", () => {
-  const records = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "output", "records.json"), "utf8"));
-  const first = records[0];
-  const row = toSheetRow(first);
-  assert.deepEqual(Object.keys(row), SCHEMA_FIELDS);
-  assert.equal(row.id, "msg-001");
-  assert.equal(row.confidence, 0.96);
-  assert.equal(row.identifiers, "error_code: 403; account: arcvault.io/user/jsmith; started_at: after your update last Tuesday");
-  assert.equal(row.amounts, "");
-  assert.equal(row.escalation_reasons, "");
-  assert.equal(row.ai_errors, "");
-  assert.equal(row.escalated, false);
-  for (const record of records) {
-    for (const value of Object.values(toSheetRow(record))) {
-      assert.ok(["string", "number", "boolean"].includes(typeof value));
-    }
+test("a full escalated billing record becomes one readable row", () => {
+  const billing = {
+    id: "msg-003",
+    source: "Support Portal",
+    received_at: "2026-11-05T17:00:00.000Z",
+    message: "Invoice #8821 shows a charge of $1,240 but our contract rate is $980/month.",
+    category: "Billing Issue",
+    priority: "Medium",
+    confidence: 0.96,
+    reasoning: "A billing dispute.",
+    core_issue: "Charged more than the contract rate.",
+    identifiers: { invoice_number: "8821" },
+    amounts: { charged: 1240, expected: 980, overcharge: 260 },
+    urgency_signal: "medium",
+    outage_signal: false,
+    standard_queue: "Billing",
+    escalated: true,
+    escalation_reasons: ["low_confidence", "overcharge_over_500"],
+    final_queue: "Escalation",
+    summary: "The customer disputes invoice 8821.",
+    model: "openai/gpt-oss-120b",
+    ai_errors: [],
+  };
+  assert.deepEqual(toSheetRow(billing), {
+    ...billing,
+    identifiers: "invoice_number: 8821",
+    amounts: "charged: 1240; expected: 980; overcharge: 260",
+    escalation_reasons: "low_confidence, overcharge_over_500",
+    ai_errors: "",
+  });
+});
+
+test("every saved sample record becomes a row of plain cell values", () => {
+  const saved = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "output", "records.json"), "utf8"));
+  for (const savedRecord of saved) {
+    const row = toSheetRow(savedRecord);
+    assert.deepEqual(Object.keys(row), SCHEMA_FIELDS);
+    for (const value of Object.values(row)) assert.ok(["string", "number", "boolean"].includes(typeof value));
   }
 });

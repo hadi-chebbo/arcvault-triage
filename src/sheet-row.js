@@ -35,13 +35,22 @@ function pairsText(object) {
     .join("; ");
 }
 
+// How each nested field is written. Reasons read as a list; the others as "; "-separated parts.
+const FORMATTERS = {
+  identifiers: (value) => (isPlainObject(value) ? pairsText(value) : undefined),
+  amounts: (value) => (isPlainObject(value) ? pairsText(value) : undefined),
+  escalation_reasons: (value) => (Array.isArray(value) ? value.join(", ") : undefined),
+  ai_errors: (value) => (Array.isArray(value) ? value.join("; ") : undefined),
+};
+
+function isPlainObject(value) {
+  return typeof value === "object" && !Array.isArray(value);
+}
+
 function cell(field, value) {
   if (value === null || value === undefined) return "";
-  if (field === "identifiers" || field === "amounts") {
-    if (typeof value === "object" && !Array.isArray(value)) return pairsText(value);
-  }
-  if (field === "escalation_reasons" && Array.isArray(value)) return value.join(", ");
-  if (field === "ai_errors" && Array.isArray(value)) return value.join("; ");
+  const formatted = FORMATTERS[field] ? FORMATTERS[field](value) : undefined;
+  if (formatted !== undefined) return formatted;
   if (typeof value === "object") return JSON.stringify(value);
   return value;
 }

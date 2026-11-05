@@ -10,7 +10,7 @@
 - [ ] The prompt documentation has both prompts in full, each with one paragraph on structure, tradeoffs and what would change with more time
 - [ ] The architecture write-up (1–2 pages) covers system design, routing logic, escalation logic, production scale (reliability, cost, latency), Phase 2, and which model was used and why
 - [ ] The AI usage log is complete and uses real examples from the build
-- [ ] The workflow is exported to the repo with no credentials in it, and the sync check passes
+- [ ] The workflow is exported to the repo with no credential secrets in it (it names the n8n credential it uses), and the sync check passes
 - [ ] Screenshots show each step's output for the required samples
 - [ ] The records JSON file holds the final Triage Records for the five required samples
 - [ ] A checklist covers recording the Loom video and the submission email (subject "AI Engineer Assessment — [Name]", Sheet link, live demo offer)
