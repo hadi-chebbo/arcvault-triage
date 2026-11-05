@@ -4,11 +4,21 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-human (needs the user's Google Cloud setup: project, Sheets API, service account, sharing)
+**Status:** ready-for-human (built and verified; only the view-only link sharing is left, which needs the user's go-ahead)
 
-- [ ] The Sheet has tabs All Records, Engineering, Product, Billing, Customer Success and Escalation, each with the Triage Record columns in spec order
-- [ ] Nested fields (identifiers, amounts, escalation reasons) are written as readable text
-- [ ] Each record appears in All Records and in the tab for its final Queue
-- [ ] n8n connects with a service account; no credential is committed to the repo
-- [ ] After the five required samples are sent, the Sheet shows the expected tabs filled in
+- [x] The Sheet has tabs All Records, Engineering, Product, Billing, Customer Success and Escalation, each with the Triage Record columns in spec order
+- [x] Nested fields (identifiers, amounts, escalation reasons) are written as readable text
+- [x] Each record appears in All Records and in the tab for its final Queue
+- [x] n8n connects with a Google OAuth credential (service-account keys are blocked by the org policy); no credential secret is committed to the repo
+- [x] After the five required samples are sent, the Sheet shows the expected tabs filled in
 - [ ] The Sheet is shared view-only with anyone who has the link
+
+## Comments
+
+Findings from ticket 05:
+- The service-account plan failed: the Cloud project's organization enforces `iam.disableServiceAccountKeyCreation`, so no key could be created. n8n now uses a Google Sheets OAuth2 credential with the developer's Google account. In Testing mode the sign-in expires after 7 days; reconnect it in n8n before a demo.
+- Sheet: "ArcVault Triage", ID `1Malay51uF1p5RbS6VDyXEadtEgMP8sR8GJOKUXUh-tE`.
+- Verified live: after the five required samples, every record is in All Records and in the tab for its final Queue; nested fields read as text (e.g. `charged: 1240; expected: 980; overcharge: 260`).
+- Verified a failed write: with All Records pointed at a missing tab, the webhook still returned the full 20-field Triage Record and the Queue tab write still happened.
+- Three test sends left duplicate rows (msg-001 in All Records and Engineering, msg-002 in Product, msg-003 in All Records and Billing). Clear them before the demo.
+- Review fixes: the full-record test now uses a fixed record instead of live model output; both Sheets nodes always output an item, so the reply can't stall if a write returns nothing. Not changed: the reply still waits for both Sheet writes (simpler flow; Google writes take well under a second), and the header row must match the field names exactly (the README shows the exact line).

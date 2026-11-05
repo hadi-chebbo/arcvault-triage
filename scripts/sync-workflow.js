@@ -25,6 +25,8 @@ const CODE_NODES = {
   "Enrich": "workflow/code/enrich.js",
   "Decide": "workflow/code/decide.js",
   "Build Response": "workflow/code/respond.js",
+  "Sheet Row": "workflow/code/sheet-row.js",
+  "Queue Row": "workflow/code/queue-row.js",
 };
 
 function read(file) {

@@ -1,6 +1,6 @@
 # ArcVault Intake & Triage
 
-An n8n pipeline that receives a customer Request at a webhook, classifies and enriches it with an LLM (Groq, `openai/gpt-oss-120b`), routes it to a Standard Queue with plain-code rules, escalates when a rule applies, and returns a full Triage Record. The Google Sheet comes in a later ticket.
+An n8n pipeline that receives a customer Request at a webhook, classifies and enriches it with an LLM (Groq, `openai/gpt-oss-120b`), routes it to a Standard Queue with plain-code rules, escalates when a rule applies, and returns a full Triage Record. Each Triage Record is also written to a Google Sheet.
 
 ## Prerequisites
 
@@ -40,6 +40,21 @@ npm run send -- --out my.json       # write the records to another path
 ```
 
 A whole-file send prints one line per Request and writes the Triage Records as a JSON array to `output/records.json`.
+
+## Google Sheet
+
+Each Triage Record is written to two tabs: `All Records`, and the tab for its final Queue (`Engineering`, `Product`, `Billing`, `Customer Success` or `Escalation`). Nested fields are written as readable text, for example `error_code: 403; account: arcvault.io/user/jsmith`. Cells are written as raw text, so a message that starts with `=` is not run as a formula. If a write fails, the webhook still returns the Triage Record.
+
+To point the imported workflow at your own Sheet:
+
+1. Create a Sheet with the six tabs above. Row 1 of every tab must hold exactly these 20 names, one per column. Values are matched to columns by name, so a misspelled header loses that field:
+   ```
+   id,source,received_at,message,category,priority,confidence,reasoning,core_issue,identifiers,amounts,urgency_signal,outage_signal,standard_queue,escalated,escalation_reasons,final_queue,summary,model,ai_errors
+   ```
+2. In Google Cloud, turn on the Google Sheets API, set up the OAuth consent screen (External, add yourself as a test user), and create a Web application OAuth client with the redirect URI `http://localhost:5678/rest/oauth2-credential/callback`. In n8n, create a Google Sheets OAuth2 credential with that client ID and secret, and sign in with your Google account.
+3. Open the nodes `Write All Records` and `Write Queue Tab`, select that credential, and change the document ID to your Sheet's ID.
+
+The OAuth app is in Testing mode, so Google ends the sign-in after 7 days. Open the credential in n8n and click Reconnect.
 
 ## Test
 
