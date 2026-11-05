@@ -173,7 +173,7 @@ A good test exercises behavior through a public interface and asserts on outcome
 ### Seam A: the webhook (main seam)
 
 - The evaluation script posts every sample Request to the running workflow and checks each returned Triage Record against an expectations file.
-- For each sample, the expectations give the acceptable Categories (more than one where a sample is ambiguous, as #4 is), the expected `final_queue`, the expected `escalated` value, and any Escalation Reasons that must appear.
+- For each sample, the expectations give the acceptable Categories (more than one where a sample is ambiguous, as the mixed bug-and-billing edge case is), the expected `final_queue`, the expected `escalated` value, and any Escalation Reasons that must appear.
 - It also checks that every Triage Record has every schema field.
 - Because the AI is not fully deterministic, a miss is reported in the table and does not abort the run. Every miss is investigated and logged in the AI usage log.
 - Expected results for the five required samples:
@@ -183,10 +183,12 @@ A good test exercises behavior through a public interface and asserts on outcome
 | 1 | Bug Report | Engineering | no | none |
 | 2 | Feature Request | Product | no | none |
 | 3 | Billing Issue | Billing | no | none (Overcharge is $260) |
-| 4 | Technical Question or Feature Request | Escalation | yes | low_confidence |
+| 4 | Technical Question | Customer Success | no | none (changed in ticket 04, see below) |
 | 5 | Incident/Outage | Escalation | yes | incident, outage_signal |
 
   Sample #4 is ambiguous on purpose. If the model is confident about it, record that as a finding: decide whether the prompt or the expectation should change, and don't hide the result.
+
+  Decision (ticket 04): the expectation changed. The first expectation was Technical Question or Feature Request, escalated with low_confidence. In every evaluation run the model chose Technical Question at Confidence 0.75–0.80. Customer Success is a sensible Queue for it (they can answer, or log a Feature Request if Okta SSO doesn't exist), and pushing one sample below 0.70 through the prompt would be overfitting.
 
 - Edge-case samples:
   - an Overcharge above $500 → Billing Issue, escalated with `overcharge_over_500`

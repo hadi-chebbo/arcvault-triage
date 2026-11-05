@@ -6,11 +6,8 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { postRequest, SPACING_MS } = require("./webhook.js");
 
-const WEBHOOK_URL = process.env.WEBHOOK_URL || "http://localhost:5678/webhook/intake";
-// Pause between Requests. Each Request makes two Groq calls, and the free tier allows
-// 8,000 tokens per minute, so sending back to back hits the rate limit (HTTP 429).
-const SPACING_MS = 20000;
 const DEFAULT_OUT = "output/records.json";
 
 const args = process.argv.slice(2);
@@ -31,15 +28,12 @@ async function main() {
   const records = [];
   for (const [index, request] of requests.entries()) {
     if (index > 0) await new Promise((done) => setTimeout(done, SPACING_MS));
-    const response = await fetch(WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(request),
-    });
-    const reply = await response.json();
+    const { status, record: reply, error } = await postRequest(request);
+    // Never save an error reply as if it were a Triage Record.
+    if (error) throw new Error(`${request.id}: ${error}`);
     records.push(reply);
     console.log(
-      `${request.id} (${request.source}) -> HTTP ${response.status}: ${reply.category ?? "no category"}, ` +
+      `${request.id} (${request.source}) -> HTTP ${status}: ${reply.category ?? "no category"}, ` +
         `confidence ${reply.confidence ?? "n/a"}, final queue ${reply.final_queue ?? "n/a"}, ` +
         `escalation reasons [${(reply.escalation_reasons || []).join(", ")}]`
     );
@@ -53,6 +47,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error("Could not reach the webhook: " + error.message);
+  console.error("Sending failed: " + error.message);
   process.exit(1);
 });

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "edge-001",
+    "source": "Email",
+    "message": "Invoice #9104 billed us $2,150 but our agreed rate is $1,400/month. Please correct this before our finance close on Friday."
+  },
+  {
+    "id": "edge-002",
+    "source": "Web Form",
+    "message": "We had an outage with ArcVault last year, but everything has been fine since. Quick question: how do I add a new admin user to our workspace?"
+  },
+  {
+    "id": "edge-003",
+    "source": "Support Portal",
+    "message": "One of our users, Maria, can't see the dashboard: it just shows a blank page for her. Everyone else on the team is fine."
+  },
+  {
+    "id": "edge-004",
+    "source": "Email",
+    "message": "The CSV export button throws error 500 every time, and on top of that I was charged twice for March ($49 each)."
+  },
+  {
+    "id": "edge-005",
+    "source": "Web Form",
+    "message": "it doesn't work"
+  },
+  {
+    "id": "edge-006",
+    "source": "Email",
+    "message": "Bonjour, depuis 9h ce matin aucun de nos 40 utilisateurs ne peut se connecter à ArcVault. Toute l'équipe est bloquée."
+  }
+]
