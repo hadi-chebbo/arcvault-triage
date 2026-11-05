@@ -158,13 +158,16 @@ Fields, in this order: `id`, `source`, `received_at`, `message`, `category`, `pr
 - Tabs: All Records, Engineering, Product, Billing, Customer Success, Escalation. There is no on-call tab: every Incident/Outage escalates, so its records land in Escalation.
 - Every tab has the same columns as the Triage Record schema. Nested fields (identifiers, amounts, escalation reasons) are written as readable text.
 - Each record is written to All Records and to the tab for its `final_queue`.
-- n8n connects through a Google service account. The Sheet is shared view-only with anyone who has the link.
+- n8n connects with the developer's own Google account through OAuth (a Google Sheets OAuth2 credential). A service account was the plan, but the Cloud project's organization blocks service-account keys (`iam.disableServiceAccountKeyCreation`); OAuth needs no key file. Trade-off: in Testing mode the sign-in expires after 7 days and must be reconnected in n8n.
+- Writes use the RAW cell format, so a message that starts with "=" is never run as a formula.
+- A failed Sheet write does not lose the Request: the webhook still returns the Triage Record.
+- The Sheet is shared view-only with anyone who has the link.
 
 ### Configuration and secrets
 
 - n8n runs in Docker and is started with one command. Its data lives in a Docker volume.
 - The Groq API key comes from an environment file that git ignores. The repo contains only an example file with placeholder values.
-- The Google service account credential is stored only in n8n's credential store and never exported into the repo.
+- The Google OAuth credential is stored only in n8n's credential store. The exported workflow names the credential but holds no secret.
 
 ## Testing Decisions
 
@@ -235,6 +238,6 @@ Decision module:
   - 4.4: architecture write-up
   - Extra: an AI usage log for the interview question "what did the AI get wrong?"
 - The brief's time budget is 3–5 hours, with a 2-day deadline. Prefer a clear, working pipeline over extra features.
-- Setup steps only the user can do: create a Groq account and API key; create a Google Cloud project, turn on the Sheets API, create a service account, and share the Sheet with it.
+- Setup steps only the user can do: create a Groq account and API key; create a Google Cloud project, turn on the Sheets API, set up the OAuth consent screen and client, create the Sheet, and connect a Google Sheets OAuth2 credential in n8n (reconnect it every 7 days while the OAuth app is in Testing mode).
 - Outage detection changed after review: the first design used keyword matching as a backup to the Category. The user rejected it because keywords don't understand meaning and can be the part that gets it wrong. It is replaced by the Outage Signal, a second AI judgement made during enrichment. The design accepts some false Escalations to avoid missed outages, and measures them with the false-alarm samples.
 - Write the documentation after the pipeline runs, so that it describes what really happened, including mistakes.

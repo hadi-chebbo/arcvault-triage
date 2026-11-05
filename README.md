@@ -1,6 +1,6 @@
 # ArcVault Intake & Triage
 
-An n8n pipeline that receives a customer Request at a webhook, classifies and enriches it with an LLM (Groq, `openai/gpt-oss-120b`), routes it to a Standard Queue with plain-code rules, escalates when a rule applies, and returns a full Triage Record. The Google Sheet comes in a later ticket.
+An n8n pipeline that receives a customer Request at a webhook, classifies and enriches it with an LLM (Groq, `openai/gpt-oss-120b`), routes it to a Standard Queue with plain-code rules, escalates when a rule applies, and returns a full Triage Record. Each Triage Record is also written to a Google Sheet.
 
 ## Prerequisites
 
@@ -40,6 +40,18 @@ npm run send -- --out my.json       # write the records to another path
 ```
 
 A whole-file send prints one line per Request and writes the Triage Records as a JSON array to `output/records.json`.
+
+## Google Sheet
+
+Each Triage Record is written to two tabs: `All Records`, and the tab for its final Queue (`Engineering`, `Product`, `Billing`, `Customer Success` or `Escalation`). Nested fields are written as readable text, for example `error_code: 403; account: arcvault.io/user/jsmith`. Cells are written as raw text, so a message that starts with `=` is not run as a formula. If a write fails, the webhook still returns the Triage Record.
+
+To point the imported workflow at your own Sheet:
+
+1. Create a Sheet with the six tabs above. Put the 20 Triage Record field names (`id` to `ai_errors`, in the order of `src/sheet-row.js`) in row 1 of every tab.
+2. In n8n, create a Google Sheets OAuth2 credential and sign in with your Google account.
+3. Open the nodes `Write All Records` and `Write Queue Tab`, select that credential, and change the document ID to your Sheet's ID.
+
+The OAuth app is in Testing mode, so Google ends the sign-in after 7 days. Open the credential in n8n and click Reconnect.
 
 ## Test
 

@@ -137,7 +137,112 @@
     },
     {
       "parameters": {
-        "respondWith": "firstIncomingItem",
+        "jsCode": "// Sheet Row: flattens the Triage Record into one row of plain cell values, using the tested module.\n// The block marked COPY is written by scripts/sync-workflow.js. Do not edit it here.\n\n// BEGIN COPY src/sheet-row.js\n// Sheet row module: turns a Triage Record into one row of plain cell values.\n// Pure function, no I/O, no imports: this file is copied unchanged into an n8n Code node.\n//\n// Returns an object with the 20 schema fields in spec order. Every value is a string,\n// number or boolean; nested fields become readable text and null becomes an empty cell.\n\nconst SHEET_FIELDS = [\n  \"id\",\n  \"source\",\n  \"received_at\",\n  \"message\",\n  \"category\",\n  \"priority\",\n  \"confidence\",\n  \"reasoning\",\n  \"core_issue\",\n  \"identifiers\",\n  \"amounts\",\n  \"urgency_signal\",\n  \"outage_signal\",\n  \"standard_queue\",\n  \"escalated\",\n  \"escalation_reasons\",\n  \"final_queue\",\n  \"summary\",\n  \"model\",\n  \"ai_errors\",\n];\n\n// \"key: value\" pairs joined by \"; \", skipping null values.\nfunction pairsText(object) {\n  return Object.entries(object)\n    .filter(([, value]) => value !== null && value !== undefined)\n    .map(([key, value]) => `${key}: ${value}`)\n    .join(\"; \");\n}\n\nfunction cell(field, value) {\n  if (value === null || value === undefined) return \"\";\n  if (field === \"identifiers\" || field === \"amounts\") {\n    if (typeof value === \"object\" && !Array.isArray(value)) return pairsText(value);\n  }\n  if (field === \"escalation_reasons\" && Array.isArray(value)) return value.join(\", \");\n  if (field === \"ai_errors\" && Array.isArray(value)) return value.join(\"; \");\n  if (typeof value === \"object\") return JSON.stringify(value);\n  return value;\n}\n\nfunction toSheetRow(record) {\n  const row = {};\n  for (const field of SHEET_FIELDS) row[field] = cell(field, record[field]);\n  return row;\n}\n\nif (typeof module !== \"undefined\") module.exports = { toSheetRow };\n// END COPY src/sheet-row.js\n\nreturn [{ json: toSheetRow($input.first().json) }];"
+      },
+      "id": "a1000000-0000-4000-8000-000000000008",
+      "name": "Sheet Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Malay51uF1p5RbS6VDyXEadtEgMP8sR8GJOKUXUh-tE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "All Records"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "a1000000-0000-4000-8000-000000000009",
+      "name": "Write All Records",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1760,
+        120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "bHNQkSnF2N26SeR7",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Queue Row: the row from Sheet Row again. The previous Sheets node may output an error item\n// when its write fails, so its input is ignored.\nreturn [{ json: $('Sheet Row').first().json }];"
+      },
+      "id": "a1000000-0000-4000-8000-000000000010",
+      "name": "Queue Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Malay51uF1p5RbS6VDyXEadtEgMP8sR8GJOKUXUh-tE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $json.final_queue }}"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "a1000000-0000-4000-8000-000000000011",
+      "name": "Write Queue Tab",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2200,
+        120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "bHNQkSnF2N26SeR7",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $('Build Response').first().json }}",
         "options": {}
       },
       "id": "a1000000-0000-4000-8000-000000000007",
@@ -145,7 +250,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1540,
+        2420,
         120
       ]
     }
@@ -188,7 +293,7 @@
       "main": [
         [
           {
-            "node": "Respond 200",
+            "node": "Sheet Row",
             "type": "main",
             "index": 0
           }
@@ -229,6 +334,50 @@
         [
           {
             "node": "Build Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheet Row": {
+      "main": [
+        [
+          {
+            "node": "Write All Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write All Records": {
+      "main": [
+        [
+          {
+            "node": "Queue Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Queue Row": {
+      "main": [
+        [
+          {
+            "node": "Write Queue Tab",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Queue Tab": {
+      "main": [
+        [
+          {
+            "node": "Respond 200",
             "type": "main",
             "index": 0
           }
