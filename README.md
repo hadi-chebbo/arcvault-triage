@@ -14,6 +14,8 @@ An n8n pipeline that receives a customer Request at a webhook, classifies and en
 | Architecture write-up | [`docs/architecture.md`](docs/architecture.md) |
 | AI usage log | [`AI_USAGE.md`](AI_USAGE.md) |
 | Evaluation results (11 samples, 3 runs each) | [`output/eval/`](output/eval/) |
+| Loom walkthrough video | `<Loom URL>` (added at submission) |
+| Live demo | Offered for the technical interview |
 | Submission checklist (video and email) | [`docs/submission-checklist.md`](docs/submission-checklist.md) |
 
 ## Quick start

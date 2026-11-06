@@ -20,12 +20,12 @@ For Hadi. Work through this in order.
 3. **Send the five samples live (60 s).** Run `npm run send`. Requests are spaced 20 s apart, so the whole file takes about 2 minutes: start it, then talk through the next steps or cut the wait.
 4. **Output (45 s).** Show the Sheet: `All Records` and the Queue tabs. Open `output/records.json`.
 5. **An escalation (45 s).** Show sample #5 in the `Escalation` tab: reasons `incident` and `outage_signal`, and its Standard Queue Engineering (on-call).
-6. **Tests and evaluation (45 s).** Run `npm test`. Show `output/eval/` and the pass/fail table. Mention sample #4 and the mixed message.
+6. **Tests and evaluation (45 s).** Run `npm test`. Show `output/eval/` and the pass/fail table. Mention sample #4 and the mixed bug-and-billing Request.
 7. **Design choices (45 s).** AI reads and writes text, code decides. Outage Signal instead of keywords. Overcharge instead of invoice total. Fail closed on bad AI output. Name the model and why.
 
 ## 3. Publish the repository
 
-The repo has no remote yet. The decision (Q10) was a public repo named `arcvault-triage`.
+The repo has no remote yet. The plan is a public GitHub repo named `arcvault-triage`.
 
 - [ ] Create the GitHub repo `arcvault-triage` (public).
 - [ ] `git remote add origin <GitHub repo URL>`, then push `main` after merging this branch.

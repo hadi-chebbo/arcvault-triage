@@ -10,9 +10,9 @@ Claude's first design detected outages in two ways: the classification model cho
 
 While choosing the tech, Claude first suggested a local Ollama model, `qwen2.5`, because it was already installed on my machine. I decided against it. I chose a hosted, much larger model on Groq instead, because classification accuracy matters more here than running offline.
 
-## Smaller fixes
+Claude then recommended Llama 3.3 70B on Groq from its own knowledge, but when we checked Groq's live model list, the model had been retired. We tested the two remaining general-purpose models on a sample and switched to `openai/gpt-oss-120b`, the larger one. Lesson: check what a provider offers today instead of trusting an AI's memory.
 
-- Claude then recommended Llama 3.3 70B on Groq from its own knowledge, but when we checked Groq's live model list, the model had been retired. We tested the two remaining general-purpose models on a sample and switched to `openai/gpt-oss-120b`, the larger one. Lesson: check what a provider actually offers instead of trusting an AI's memory.
+## Smaller fixes
 
 - The test command Claude first wrote (`node --test test/`) failed on Node 26, which no longer accepts a folder name. It was changed to a file pattern.
 - The code review found that the first version of the routing rules let malformed AI answers through (a missing confidence score, a null response, a category like "toString"). They were fixed so that anything malformed escalates to a human.
