@@ -73,7 +73,7 @@ Limits: three runs per sample is few, and the labels and prompts were written by
 
 **Cost.** I did not measure tokens per Request. The free tier limit of 8,000 tokens per minute forced me to space Requests 20 seconds apart. Options: a smaller model for easy cases, with the large one only on low Confidence; prompt caching for the fixed prompt text; batching.
 
-**Latency.** The two calls run in sequence, and retries pause 10 s and 20 s. The enrichment call needs only the Request text, so the calls could run in parallel or merge into one. Rate limits set the worst case.
+**Latency.** The two calls run in sequence, and retries pause 10 s and 20 s. The enrichment call uses the Category only as context, so the calls could run in parallel or merge into one. Rate limits set the worst case.
 
 **Not built.** Webhook authentication, removal of personal data before text goes to a third-party model, rate limiting, and cost controls.
 
