@@ -15,7 +15,7 @@ An n8n pipeline that receives a customer Request at a webhook, classifies and en
 | AI usage log | [`AI_USAGE.md`](AI_USAGE.md) |
 | Evaluation results (11 samples, 3 runs each) | [`output/eval/`](output/eval/) |
 | Live demo | Offered for the technical interview |
-| Submission checklist (video and email) | [`docs/submission-checklist.md`](docs/submission-checklist.md) |
+| Design spec and tickets (how it was planned and built) | [`.scratch/triage-pipeline/`](.scratch/triage-pipeline/spec.md) |
 
 ## Quick start
 
