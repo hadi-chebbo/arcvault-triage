@@ -1,6 +1,6 @@
 # Screenshots
 
-Each image shows one step of the pipeline for the five required samples. The step images are the output of each node in an n8n execution.
+The step images come from one saved n8n execution: sample #5 (the dashboard outage) from the final run of the five required samples, the same run that produced `output/records.json`. Each one shows the node's input on the left and its output on the right. Sample #5 is shown because it passes through every rule: it is classified, enriched, and escalated.
 
 ## Workflow
 
@@ -26,13 +26,13 @@ The whole workflow canvas in n8n.
 
 `Decide`: Standard Queue, Overcharge, Escalation Reasons and final Queue, set by plain code.
 
-![Output of the Sheet write nodes](06-sheet-writes.png)
+![Output of the Write All Records node](06-sheet-writes.png)
 
-The two Google Sheets writes: `All Records` and the tab for the final Queue.
+`Write All Records`: the flattened row appended to the `All Records` tab. `Write Queue Tab` then appends the same row to the tab for the final Queue (here `Escalation`).
 
 ![Output of the Respond 200 node](07-respond.png)
 
-`Respond 200`: the full Triage Record returned to the sender.
+`Respond 200`: the full Triage Record returned to the sender, with the 20 schema fields.
 
 ## Google Sheet
 

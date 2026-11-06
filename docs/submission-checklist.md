@@ -27,12 +27,13 @@ Brief 4.1 accepts any one of: a Loom video, the exported workflow plus screensho
 
 ## 3. Publish the repository
 
-The repo has no remote yet. The plan is a public GitHub repo named `arcvault-triage`.
+The repo is on GitHub at https://github.com/hadi-chebbo/arcvault-triage. It was created **private** so you can review it first.
 
-- [ ] Create the GitHub repo `arcvault-triage` (public).
-- [ ] `git remote add origin <GitHub repo URL>`, then push `main` after merging this branch.
-- [ ] Confirm `.env` is not committed: `git ls-files | grep -x .env` must print nothing, and `git log --all -- .env` must be empty.
-- [ ] Open the repo in a private window and check that README, `docs/` and screenshots show.
+- [x] Create the GitHub repo and push `main`.
+- [x] `.env` is not committed (`git ls-files` and the full history were checked).
+- [ ] Review the repo on GitHub.
+- [ ] Make it public: `gh repo edit hadi-chebbo/arcvault-triage --visibility public --accept-visibility-change-consequences` (or Settings → General → Danger Zone → Change visibility).
+- [ ] Open the repo in a private window and check that the README, `docs/` and screenshots show.
 - [ ] Open the Sheet link in a private window and check that it opens view-only.
 
 ## 4. Submission email
@@ -47,7 +48,7 @@ Send to your recruiting contact at Valsoft within 2 business days of receiving t
 >
 > Please find my submission for the AI Engineer assessment.
 >
-> - GitHub repository (workflow export, code, tests): <GitHub repo URL>
+> - GitHub repository (workflow export, code, tests): https://github.com/hadi-chebbo/arcvault-triage
 > - Google Sheet with the Triage Records (view-only): https://docs.google.com/spreadsheets/d/1Malay51uF1p5RbS6VDyXEadtEgMP8sR8GJOKUXUh-tE/edit
 > - Structured output file: `output/records.json` in the repository
 > - Prompt documentation: `docs/prompts.md`
