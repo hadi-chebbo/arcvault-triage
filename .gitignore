@@ -1,3 +1,8 @@
 node_modules/
 .env
 .DS_Store
+
+# Local only: agent setup and personal submission notes
+CLAUDE.md
+docs/agents/
+docs/submission-checklist.md

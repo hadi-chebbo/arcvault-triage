@@ -222,7 +222,7 @@ Decision module:
 ## Out of Scope
 
 - A real email inbox, Gmail or Mailhog intake. Sources are simulated by the sender script.
-- Pushing to GitHub or any other remote. The project stays in local git until the user decides otherwise.
+- Pushing to GitHub or any other remote. The project stays in local git until the user decides otherwise. (Changed in ticket 06: the repo was published to GitHub for the submission.)
 - Real downstream systems (Jira, Slack, PagerDuty). Queues are Sheet tabs.
 - Confidence based on self-consistency or log probabilities (Phase 2).
 - A feedback loop where human corrections improve the prompts (Phase 2).

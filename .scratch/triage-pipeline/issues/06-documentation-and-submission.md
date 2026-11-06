@@ -18,7 +18,7 @@
 ## Comments
 
 Done. Docs written by a Sonnet subagent, then reviewed with `/code-review` (standards and spec) and fixed.
-- New: `docs/prompts.md`, `docs/architecture.md`, `docs/submission-checklist.md`, `docs/screenshots/` (9 images). Updated: `README.md` (deliverables table, quick start), `AI_USAGE.md` (model choice: Ollama `qwen2.5` → Llama 3.3 70B retired → `openai/gpt-oss-120b`).
+- New: `docs/prompts.md`, `docs/architecture.md`, `docs/screenshots/` (9 images). Updated: `README.md` (deliverables table, quick start), `AI_USAGE.md` (model choice: Ollama `qwen2.5` → Llama 3.3 70B retired → `openai/gpt-oss-120b`).
 - Brief 4.1 is met with the exported workflow plus screenshots, and a live-demo offer. A Loom video is optional.
 - The n8n screenshots come from saved execution 219 (sample #5 in the final run), so no new Requests were sent and the Sheet keeps exactly the five records.
-- The submission email is drafted in `docs/submission-checklist.md`; recording a Loom (optional), making the repo public and sending the email are left to the developer.
+- The submission checklist and email draft are kept locally, out of the repo, with the agent setup files (`CLAUDE.md`, `docs/agents/`); recording a Loom (optional), making the repo public and sending the email are left to the developer.
