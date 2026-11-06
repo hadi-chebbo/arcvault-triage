@@ -2,6 +2,32 @@
 
 An n8n pipeline that receives a customer Request at a webhook, classifies and enriches it with an LLM (Groq, `openai/gpt-oss-120b`), routes it to a Standard Queue with plain-code rules, escalates when a rule applies, and returns a full Triage Record. Each Triage Record is also written to a Google Sheet.
 
+## Deliverables
+
+| Deliverable | Where |
+|---|---|
+| Workflow export (import into n8n) | [`workflow/arcvault-triage.json`](workflow/arcvault-triage.json) |
+| Screenshots of each step's output | [`docs/screenshots/`](docs/screenshots/README.md) |
+| Triage Records for the five required samples | [`output/records.json`](output/records.json) |
+| Google Sheet (view-only) | [ArcVault Triage](https://docs.google.com/spreadsheets/d/1Malay51uF1p5RbS6VDyXEadtEgMP8sR8GJOKUXUh-tE/edit) |
+| Prompt documentation | [`docs/prompts.md`](docs/prompts.md) |
+| Architecture write-up | [`docs/architecture.md`](docs/architecture.md) |
+| AI usage log | [`AI_USAGE.md`](AI_USAGE.md) |
+| Evaluation results (11 samples, 3 runs each) | [`output/eval/`](output/eval/) |
+| Live demo | Offered for the technical interview |
+| Submission checklist (video and email) | [`docs/submission-checklist.md`](docs/submission-checklist.md) |
+
+## Quick start
+
+```
+cp .env.example .env     # then put your Groq API key in .env
+npm run n8n:up
+npm run n8n:import
+npm run send
+```
+
+The exported workflow names the Google Sheets credential it uses (`Google Sheets account`) but contains no secret. The Groq API key is read from `.env` and never stored in the workflow. To write to your own Sheet, see "Google Sheet" below.
+
 ## Prerequisites
 
 Docker (with Compose) and Node 20 or later. No `npm install` is needed: there are no dependencies.

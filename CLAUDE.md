@@ -1,6 +1,6 @@
 # ArcVault Triage
 
-AI intake and triage pipeline for the fictional company ArcVault (Valsoft AI Engineer assessment). Local-only: no git remote.
+AI intake and triage pipeline for the fictional company ArcVault (Valsoft AI Engineer assessment). Remote: https://github.com/hadi-chebbo/arcvault-triage (private until submission).
 
 ## Agent skills
 
