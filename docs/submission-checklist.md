@@ -2,7 +2,9 @@
 
 For Hadi. Work through this in order.
 
-## 1. Before recording
+Brief 4.1 accepts any one of: a Loom video, the exported workflow plus screenshots of each step, or a live demo. This submission uses the exported workflow and screenshots (`workflow/arcvault-triage.json`, `docs/screenshots/`) and offers a live demo. A Loom video is optional; section 2 is its outline if you record one.
+
+## 1. Before a live demo (or a recording)
 
 - [ ] Start Docker Desktop.
 - [ ] `npm run n8n:up` and open http://localhost:5678.
@@ -13,7 +15,7 @@ For Hadi. Work through this in order.
 - [ ] Run `npm test` and `npm run sync:check`. Both must pass.
 - [ ] Check that `docs/screenshots/` holds all nine PNGs listed in its README.
 
-## 2. Loom video outline (about 5 minutes)
+## 2. Demo outline (about 5 minutes; also the Loom outline if you record one)
 
 1. **Problem (30 s).** ArcVault gets free-text Requests from Email, Web Form and Support Portal. People sort them by hand, so they land in the wrong Queue.
 2. **Workflow tour in n8n (90 s).** Walk the canvas node by node: Intake Webhook, Stamp Request, Classify, Enrich, Decide, Build Response, the two Sheet writes, Respond 200. Say what is AI (Classify, Enrich) and what is plain code (Decide).
@@ -46,7 +48,6 @@ Send to your recruiting contact at Valsoft within 2 business days of receiving t
 > Please find my submission for the AI Engineer assessment.
 >
 > - GitHub repository (workflow export, code, tests): <GitHub repo URL>
-> - Loom walkthrough: <Loom URL>
 > - Google Sheet with the Triage Records (view-only): https://docs.google.com/spreadsheets/d/1Malay51uF1p5RbS6VDyXEadtEgMP8sR8GJOKUXUh-tE/edit
 > - Structured output file: `output/records.json` in the repository
 > - Prompt documentation: `docs/prompts.md`
